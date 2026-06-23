@@ -1,31 +1,28 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion } from "motion/react";
-import Image from "next/image";
+import { Quotes } from "@phosphor-icons/react";
 
 const TEAM = [
   {
     name: "Wei Chen",
     role: "Managing Partner",
-    trackRecord: "$1.2B deployed across 40+ projects",
-    bio: "Previously led APAC clean energy investments at a major Singaporean sovereign fund.",
+    bio: "Previously led APAC clean energy investments at a major Singaporean sovereign fund. $1.2B deployed across 40+ projects.",
     photo:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80&auto=format",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format",
   },
   {
     name: "Sarah Lim",
     role: "Head of Investments",
-    trackRecord: "Structured 25+ renewable energy deals",
-    bio: "Former VP at a global infrastructure bank, specializing in Southeast Asian markets.",
+    bio: "Former VP at a global infrastructure bank, specializing in Southeast Asian markets. Structured 25+ renewable energy deals.",
     photo:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80&auto=format",
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80&auto=format",
   },
   {
     name: "David Zhang",
     role: "Director, China Operations",
-    trackRecord: "Built 3 GW of solar capacity",
-    bio: "Founded two successful EPC companies before joining Inspira to bridge Chinese developers with global capital.",
+    bio: "Founded two successful EPC companies before joining Inspira to bridge Chinese developers with global capital. Built 3 GW of solar capacity.",
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80&auto=format",
   },
@@ -40,64 +37,57 @@ const MILESTONES = [
 
 export function AboutTeam() {
   const sectionRef = useRef<HTMLElement>(null);
+  const photoRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.querySelector("img")?.classList.add("revealed");
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    photoRefs.current.forEach((ref) => ref && observer.observe(ref));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section ref={sectionRef} id="about" className="relative overflow-hidden py-32 lg:py-40">
-      {/* Layer 1: Background image — energy infrastructure */}
+    <section ref={sectionRef} id="about" className="relative overflow-hidden py-32 lg:py-44">
+      {/* Warm glow from above */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[oklch(0.70_0.12_78/0.04)] via-transparent to-transparent" />
+
+      {/* Background image — subtle energy infrastructure */}
       <div className="pointer-events-none absolute inset-0">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1920&q=80&auto=format"
           alt=""
-          fill
-          className="object-cover"
-          sizes="100vw"
-          style={{ opacity: 0.06 }}
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0.04 }}
         />
       </div>
-
-      {/* Layer 2: Gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-
-      {/* Precision decoration: structured vertical lines */}
-      <div className="pointer-events-none absolute left-[8%] top-0 h-full w-px bg-gradient-to-b from-transparent via-accent/8 to-transparent hidden lg:block" />
-      <div className="pointer-events-none absolute right-[8%] top-0 h-full w-px bg-gradient-to-b from-transparent via-accent/6 to-transparent hidden lg:block" />
-
-      {/* Subtle dot array — top right */}
-      <svg className="pointer-events-none absolute right-[5%] top-[10%] h-48 w-48 opacity-[0.06] hidden lg:block" viewBox="0 0 192 192" fill="none">
-        {Array.from({ length: 8 }).map((_, row) =>
-          Array.from({ length: 8 }).map((_, col) => (
-            <circle key={`${row}-${col}`} cx={col * 24 + 12} cy={row * 24 + 12} r="1" fill="var(--gold)" />
-          ))
-        )}
-      </svg>
-
-      {/* Warm glow — bottom center */}
-      <div className="pointer-events-none absolute bottom-0 left-1/2 h-[300px] w-[600px] -translate-x-1/2 translate-y-1/2 rounded-full bg-gold/[0.03] blur-[100px]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
         {/* Header */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-accent/60" />
-              <p className="text-[12px] font-semibold uppercase tracking-[0.25em] text-accent">
-                Our Team
-              </p>
-            </div>
-            <h2 className="mt-5 font-heading text-4xl leading-[1.08] tracking-[-0.02em] text-foreground md:text-5xl">
-              Built by operators who{" "}
-              <span className="italic text-accent">know the asset class</span>
-            </h2>
-          </div>
-          <div className="flex items-end lg:col-span-7">
-            <p className="max-w-[55ch] text-lg leading-relaxed text-muted-foreground">
-              Deep energy sector expertise combined with institutional fund
-              management experience across Asian and global markets.
-            </p>
-          </div>
+        <div className="max-w-3xl">
+          <p className="section-eyebrow text-accent mb-5">
+            Our Team
+          </p>
+          <h2 className="font-heading text-4xl leading-[1.08] tracking-[-0.02em] text-foreground md:text-5xl">
+            Built by operators who{" "}
+            <span className="italic text-accent">know the asset class</span>
+          </h2>
+          <p className="narrative-text mt-6 text-lg text-muted-foreground">
+            Deep energy sector expertise combined with institutional fund
+            management experience across Asian and global markets.
+          </p>
         </div>
 
-        {/* Team Cards */}
+        {/* Team Cards — clean editorial portraits */}
         <div className="mt-20 grid grid-cols-1 gap-10 md:grid-cols-3">
           {TEAM.map((member, i) => (
             <motion.div
@@ -112,48 +102,29 @@ export function AboutTeam() {
               }}
               className="group"
             >
-              {/* Photo container with overlay — irregular top corner */}
-              <div className="relative aspect-[4/5] overflow-hidden bg-muted" style={{ clipPath: "polygon(0 3%, 97% 0, 100% 3%, 100% 100%, 0 100%)" }}>
-                <Image
+              {/* Photo — clean rectangle with reveal animation */}
+              <div
+                ref={(el) => { photoRefs.current[i] = el; }}
+                className="relative aspect-[3/4] overflow-hidden bg-muted"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={member.photo}
                   alt={`${member.name}, ${member.role} at Inspira Energy`}
-                  fill
-                  className="object-cover transition-all duration-700 group-hover:scale-[1.03]"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  style={{ filter: "grayscale(60%)" }}
+                  className="absolute inset-0 h-full w-full object-cover image-reveal transition-all duration-700 group-hover:scale-[1.06]"
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" />
-                {/* Name + role + track record overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6 + i * 0.15, duration: 1.0 }}
-                  >
-                    <div className="h-px w-8 bg-gold/40 mb-3" />
-                    <p className="font-mono text-xs text-gold/80 tracking-wide">
-                      {member.trackRecord}
-                    </p>
-                    <h3 className="mt-4 text-lg font-semibold tracking-tight text-white">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-[13px] font-medium text-gold/70">
-                      {member.role}
-                    </p>
-                  </motion.div>
-                </div>
-                {/* Corner decoration — angular */}
-                <div className="absolute top-4 right-4 h-8 w-8">
-                  <div className="absolute top-0 right-0 h-px w-4 bg-white/20" />
-                  <div className="absolute top-0 right-0 h-4 w-px bg-white/20" />
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
               </div>
 
-              {/* Bio text */}
-              <div className="mt-4">
-                <p className="text-[14px] leading-relaxed text-muted-foreground">
+              {/* Name + role + bio below photo */}
+              <div className="mt-5">
+                <h3 className="text-lg font-semibold tracking-tight text-foreground">
+                  {member.name}
+                </h3>
+                <p className="mt-1 text-[13px] font-medium text-accent">
+                  {member.role}
+                </p>
+                <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
                   {member.bio}
                 </p>
               </div>
@@ -161,19 +132,39 @@ export function AboutTeam() {
           ))}
         </div>
 
-        {/* Timeline */}
-        <div className="relative mt-28 border-t border-border/40 pt-16">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="h-px w-8 bg-accent/40" />
-            <p className="text-[12px] font-semibold uppercase tracking-[0.25em] text-muted-foreground/60">
-              Company Milestones
-            </p>
+        {/* Managing Partner Manifesto with glow */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-24 border-l-2 border-accent/40 pl-8 lg:pl-12 relative"
+        >
+          <div className="pointer-events-none absolute -left-px top-0 bottom-0 w-px bg-accent/20 blur-sm" />
+          <Quotes className="h-8 w-8 text-accent/30 mb-4 quotes-breathe" weight="duotone" />
+          <p className="font-heading text-xl leading-relaxed tracking-tight text-foreground/80 md:text-2xl lg:max-w-3xl [text-shadow:0_2px_16px_oklch(0_0_0/8%)]">
+            &ldquo;We don&rsquo;t just invest in projects — we invest in the operators
+            behind them. Our role is to bridge the gap between institutional
+            capital and the people building the energy transition on the ground.&rdquo;
+          </p>
+          <div className="mt-6 flex items-center gap-4 group">
+            <div className="h-px w-8 bg-accent/30 transition-all duration-500 group-hover:w-14" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Wei Chen</p>
+              <p className="text-[12px] text-accent/70">Managing Partner, Inspira Energy</p>
+            </div>
           </div>
+        </motion.div>
 
-          {/* Connected timeline */}
+        {/* Timeline — clean editorial */}
+        <div className="relative mt-28 border-t border-border/30 pt-16">
+          <p className="section-eyebrow text-muted-foreground/50 mb-10">
+            Company Milestones
+          </p>
+
           <div className="relative grid grid-cols-2 gap-0 md:grid-cols-4">
-            {/* Connecting line */}
-            <div className="absolute top-[7px] left-0 right-0 h-px bg-border/40 hidden md:block" />
+            {/* Connecting line with draw animation */}
+            <div className="absolute top-[5px] left-0 right-0 h-px bg-border/30 hidden md:block line-draw" />
 
             {MILESTONES.map((m, i) => (
               <motion.div
@@ -188,15 +179,19 @@ export function AboutTeam() {
                 }}
                 className="relative pl-8 md:pl-0"
               >
-                {/* Dot on timeline — diamond shape */}
-                <div className="absolute left-0 top-[2px] h-3.5 w-3.5 rotate-45 border-2 border-accent/50 bg-background md:left-1/2 md:-translate-x-1/2">
-                  <div className="absolute inset-[3px] bg-accent/30" />
-                </div>
+                {/* Dot on timeline with scale bounce */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.3, duration: 0.5, type: "spring", stiffness: 300 }}
+                  className="absolute left-0 top-[1px] h-2.5 w-2.5 rounded-full border-2 border-accent/50 bg-background md:left-1/2 md:-translate-x-1/2"
+                />
                 <div className="pt-8 md:pt-8 md:text-center">
                   <p className="font-heading text-base font-semibold text-accent">
                     {m.year}
                   </p>
-                  <p className="mt-2 text-[13px] leading-relaxed text-foreground/70">
+                  <p className="mt-2 text-[13px] leading-relaxed text-foreground/60">
                     {m.event}
                   </p>
                 </div>

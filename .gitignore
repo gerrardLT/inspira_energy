@@ -42,9 +42,16 @@ next-env.d.ts
 
 # verification screenshots
 /*.png
+/*.jpg
 /verify-*.png
 /screenshot-*.png
 /inspect-*.png
 /cip-*.png
 /gcpc-*.png
 /ntr-*.png
+
+# docs - sensitive files
+/docs/*.pdf
+
+# misc temp files
+/ss*.jpg

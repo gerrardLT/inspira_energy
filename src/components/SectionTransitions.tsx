@@ -1,54 +1,64 @@
+"use client";
+
+import { motion } from "motion/react";
+
 /**
- * Capital Clarity — Section Transitions
+ * Editorial Section Transitions
  *
- * Design philosophy: Transitions serve the content, they are not content themselves.
- * Simple CSS gradients (40-60px) replace the elaborate "corridor" components.
+ * Clean gradient corridors between sections with subtle light animations.
+ * Pure tonal shifts that let the content breathe.
  *
- * - DarkToDark: Subtle tonal shift (navy → navy-mid → navy), no extra component needed
- * - DarkToLight: Clean gradient fade (navy → background)
- * - LightToDark: Clean gradient fade (background → navy)
+ * - DarkToLight:    Deep navy → light background
+ * - LightToDark:    Light background → deep navy
+ * - DepthBreath:    Dark-to-dark subtle undulation
  */
 
 /**
- * Dark → Light transition.
- * Used between dark sections (Hero/FundCards/GlobalMarkets/ForDevelopers/Insights)
- * and the light AboutTeam section.
+ * Dark → Light corridor.
  */
 export function DarkToLight() {
   return (
-    <div className="relative h-12 w-full overflow-hidden md:h-16">
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy)] via-[oklch(0.22_0.03_260)] to-[var(--background)]" />
-      {/* Subtle gold threshold line */}
-      <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-[oklch(0.70_0.12_78_/_12%)] to-transparent" />
+    <div className="relative h-32 w-full overflow-hidden md:h-40">
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)] via-[oklch(0.22_0.03_260)] to-[var(--background)]" />
+      {/* Thin editorial threshold line with draw animation */}
+      <div className="absolute left-0 right-0 top-[45%] h-px bg-gradient-to-r from-transparent via-[oklch(0.70_0.12_78_/_12%)] to-transparent line-draw" />
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[var(--background)] to-transparent" />
     </div>
   );
 }
 
 /**
- * Light → Dark transition.
- * Used between the light AboutTeam section and dark Insights section.
+ * Light → Dark corridor.
  */
 export function LightToDark() {
   return (
-    <div className="relative h-12 w-full overflow-hidden md:h-16">
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)] via-[oklch(0.22_0.03_260)] to-[var(--navy)]" />
-      {/* Subtle teal threshold line */}
-      <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-[oklch(0.54_0.09_172_/_12%)] to-transparent" />
+    <div className="relative h-32 w-full overflow-hidden md:h-40">
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)] via-[oklch(0.22_0.03_260)] to-[var(--navy-deep)]" />
+      {/* Thin editorial threshold line with draw animation */}
+      <div className="absolute left-0 right-0 top-[55%] h-px bg-gradient-to-r from-transparent via-[oklch(0.54_0.09_172_/_12%)] to-transparent line-draw" />
+      <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-[var(--background)] to-transparent" />
     </div>
   );
 }
 
 /**
- * Dark → Dark subtle separator.
- * A thin tonal shift between two dark sections (e.g. GlobalMarkets → ForDevelopers).
- * Only 24-32px tall — barely noticeable but prevents visual merging.
+ * Dark → Dark depth breath with subtle opacity pulse.
  */
-export function DarkSeparator() {
+export function DepthBreath() {
   return (
-    <div className="relative h-6 w-full overflow-hidden md:h-8">
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy)] via-[var(--navy-mid)] to-[var(--navy)]" />
-      {/* Thin gold line at center */}
-      <div className="absolute left-1/2 top-1/2 h-px w-16 -translate-x-1/2 -translate-y-1/2 bg-[oklch(0.70_0.12_78_/_15%)]" />
+    <div className="relative h-16 w-full overflow-hidden md:h-20">
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: [0.8, 1, 0.8] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          background: `linear-gradient(to bottom,
+            var(--navy) 0%,
+            var(--navy-deep) 40%,
+            var(--navy-mid) 70%,
+            var(--navy) 100%)`,
+        }}
+      />
     </div>
   );
 }

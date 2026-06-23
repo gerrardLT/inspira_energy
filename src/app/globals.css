@@ -54,8 +54,11 @@
 
 :root {
   /* Brand palette from logo: Navy #051937, Gold #C4963A, Teal #2A8A7A */
-  --navy: oklch(0.18 0.045 260);
-  --navy-mid: oklch(0.22 0.04 260);
+  /* Depth system: 4 levels for spatial staging */
+  --navy-deep: oklch(0.14 0.05 260);   /* Deepest — Hero, Insights (far background) */
+  --navy: oklch(0.18 0.045 260);       /* Standard — FundCards (foreground) */
+  --navy-mid: oklch(0.22 0.04 260);    /* Mid — GlobalMarkets (midground) */
+  --navy-lift: oklch(0.25 0.035 260);  /* Lifted — ForDevelopers (close foreground) */
   --navy-light: oklch(0.24 0.04 260);
   --gold: oklch(0.70 0.12 78);
   --teal: oklch(0.54 0.09 172);
@@ -247,5 +250,205 @@
       linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px),
       linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
     background-size: 60px 60px;
+  }
+  /* Perspective grid — lines converge toward bottom center (GlobalMarkets) */
+  .perspective-grid {
+    background-image:
+      linear-gradient(oklch(1 0 0 / 2.5%) 1px, transparent 1px);
+    background-size: 100% 80px;
+    mask-image: linear-gradient(to bottom, oklch(0 0 0 / 60%), oklch(0 0 0 / 5%));
+    -webkit-mask-image: linear-gradient(to bottom, oklch(0 0 0 / 60%), oklch(0 0 0 / 5%));
+  }
+  /* Vertical focus lines — narrower spacing for focused areas (ForDevelopers) */
+  .vlines-bg {
+    background-image:
+      linear-gradient(90deg, oklch(1 0 0 / 2%) 1px, transparent 1px);
+    background-size: 40px 100%;
+  }
+  /* Depth vignette — inward darkening at section edges */
+  .depth-vignette {
+    box-shadow: inset 0 0 120px 40px oklch(0.10 0.05 260 / 40%);
+  }
+  /* Data pulse animation for key metrics */
+  @keyframes data-pulse {
+    0%, 100% { text-shadow: 0 0 8px oklch(0.70 0.12 78 / 20%); }
+    50% { text-shadow: 0 0 16px oklch(0.70 0.12 78 / 40%); }
+  }
+  .data-pulse {
+    animation: data-pulse 3s ease-in-out infinite;
+  }
+  /* Stage spotlight — top-down light cone for form areas */
+  .stage-spotlight {
+    background: radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      oklch(0.70 0.12 78 / 6%) 0%,
+      transparent 70%
+    );
+  }
+  /* Grid fade mask — top-strong to bottom-weak for perspective feel */
+  .grid-fade-mask {
+    mask-image: linear-gradient(to bottom, oklch(0 0 0 / 100%) 0%, oklch(0 0 0 / 30%) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, oklch(0 0 0 / 100%) 0%, oklch(0 0 0 / 30%) 100%);
+  }
+
+  /* === Editorial / Magazine Utilities === */
+
+  /* Full-bleed editorial image container */
+  .editorial-image {
+    position: relative;
+    overflow: hidden;
+  }
+  .editorial-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, oklch(0.14 0.05 260 / 70%), transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Pull-quote style big numbers */
+  .pull-quote {
+    border-left: 2px solid oklch(0.70 0.12 78 / 40%);
+    padding-left: 1.5rem;
+  }
+
+  /* Editorial narrative paragraph */
+  .narrative-text {
+    max-width: 65ch;
+    line-height: 1.75;
+    letter-spacing: -0.005em;
+  }
+
+  /* Editorial link — text + arrow, replaces button CTA */
+  .editorial-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .editorial-link:hover {
+    gap: 0.75rem;
+  }
+
+  /* Section eyebrow — consistent top label */
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+  }
+  .section-eyebrow::before {
+    content: '';
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  /* Thin editorial divider */
+  .editorial-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, oklch(1 0 0 / 8%), transparent);
+  }
+
+  /* === Light & Shadow / Motion Utilities === */
+
+  /* Light sweep — golden beam slowly sweeps left to right */
+  @keyframes light-sweep {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    100% { transform: translateX(200%) rotate(25deg); }
+  }
+  .light-sweep {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .light-sweep::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, oklch(0.70 0.12 78 / 4%), transparent);
+    animation: light-sweep 8s ease-in-out infinite;
+  }
+
+  /* Ken Burns — slow zoom + drift simulating camera motion */
+  @keyframes ken-burns {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.08) translate(-1%, -0.5%); }
+    100% { transform: scale(1) translate(0, 0); }
+  }
+  .ken-burns {
+    animation: ken-burns 20s ease-in-out infinite;
+  }
+
+  /* Glow breathe — for pull-quote big numbers */
+  @keyframes glow-breathe {
+    0%, 100% { text-shadow: 0 0 20px oklch(0.70 0.12 78 / 10%); }
+    50% { text-shadow: 0 0 40px oklch(0.70 0.12 78 / 25%), 0 0 80px oklch(0.70 0.12 78 / 8%); }
+  }
+  .glow-breathe {
+    animation: glow-breathe 4s ease-in-out infinite;
+  }
+
+  /* Image reveal — clip-path expands from left */
+  .image-reveal {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .image-reveal.revealed {
+    clip-path: inset(0 0% 0 0);
+  }
+
+  /* Scroll progress bar — driven by Motion scaleX */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 100;
+    background: linear-gradient(90deg, var(--gold), var(--teal));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  /* Line draw animation — horizontal line draws from left to right */
+  @keyframes line-draw {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .line-draw {
+    transform-origin: left;
+    animation: line-draw 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Quotes subtle rotation */
+  @keyframes quotes-rotate {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .quotes-breathe {
+    animation: quotes-rotate 6s ease-in-out infinite;
+  }
+}
+
+/* Reduced motion — accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
