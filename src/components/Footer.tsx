@@ -151,7 +151,7 @@ export function Footer() {
         </div>
 
         {/* Trust credentials bar */}
-        <div className="mt-14 border-t border-white/[0.04] pt-8">
+        <div className="mt-14 border-t border-white/[0.06] pt-8">
           <div className="flex flex-wrap items-center gap-6 sm:gap-10">
             {[
               { icon: ShieldCheck, text: t("masRegulated") },
@@ -159,9 +159,9 @@ export function Footer() {
               { icon: Buildings, text: t("singaporeRegistered") },
               { icon: UsersThree, text: t("lpAdvisoryBoard") },
             ].map((item) => (
-              <div key={item.text} className="flex items-center gap-2">
-                <item.icon className="h-3.5 w-3.5 text-gold/25" weight="duotone" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/18">
+              <div key={item.text} className="flex items-center gap-2.5">
+                <item.icon className="h-5 w-5 text-gold/35" weight="duotone" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/30">
                   {item.text}
                 </span>
               </div>

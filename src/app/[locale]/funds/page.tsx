@@ -5,13 +5,17 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Bank, ChartLineUp, Buildings, Lightning, ArrowRight,
-  ShieldCheck, CheckCircle, CaretDown,
+  ShieldCheck, CheckCircle, CaretDown, CircleNotch, Warning,
 } from "@phosphor-icons/react";
+import { submitFormJSON, type FormSubmitResult } from "@/lib/form-client";
 
 export default function FundsPage() {
   const t = useTranslations("funds");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const FUNDS = [
     {
@@ -26,7 +30,7 @@ export default function FundsPage() {
       suitableFor: t("debtSuitable"),
       desc: t("debtDesc"),
       strategy: [t("debtStrategy1"), t("debtStrategy2"), t("debtStrategy3"), t("debtStrategy4")],
-      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1200&q=80&auto=format",
+      image: "/images/funds/debt.png",
       imageAlt: "Wind turbines at sunset",
     },
     {
@@ -41,7 +45,7 @@ export default function FundsPage() {
       suitableFor: t("equitySuitable"),
       desc: t("equityDesc"),
       strategy: [t("equityStrategy1"), t("equityStrategy2"), t("equityStrategy3"), t("equityStrategy4")],
-      image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1200&q=80&auto=format",
+      image: "/images/funds/equity.png",
       imageAlt: "Large-scale solar farm aerial",
     },
     {
@@ -56,7 +60,7 @@ export default function FundsPage() {
       suitableFor: t("devSuitable"),
       desc: t("devDesc"),
       strategy: [t("devStrategy1"), t("devStrategy2"), t("devStrategy3"), t("devStrategy4")],
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80&auto=format",
+      image: "/images/funds/development.png",
       imageAlt: "Solar panels under construction",
     },
     {
@@ -71,7 +75,7 @@ export default function FundsPage() {
       suitableFor: t("codSuitable"),
       desc: t("codDesc"),
       strategy: [t("codStrategy1"), t("codStrategy2"), t("codStrategy3"), t("codStrategy4")],
-      image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=1200&q=80&auto=format",
+      image: "/images/funds/cod.png",
       imageAlt: "Wind turbines in operation",
     },
   ];
@@ -88,17 +92,22 @@ export default function FundsPage() {
   ];
 
   const FORM_FIELDS = [
-    { label: t("formName"), type: "text", placeholder: t("formNamePlaceholder"), required: true },
-    { label: t("formInstitution"), type: "text", placeholder: t("formInstitutionPlaceholder"), required: true },
-    { label: t("formPosition"), type: "text", placeholder: t("formPositionPlaceholder"), required: false },
-    { label: t("formEmail"), type: "email", placeholder: t("formEmailPlaceholder"), required: true },
-    { label: t("formPhone"), type: "tel", placeholder: t("formPhonePlaceholder"), required: false },
+    { label: t("formName"), name: "name", type: "text", placeholder: t("formNamePlaceholder"), required: true },
+    { label: t("formInstitution"), name: "institution", type: "text", placeholder: t("formInstitutionPlaceholder"), required: true },
+    { label: t("formPosition"), name: "position", type: "text", placeholder: t("formPositionPlaceholder"), required: false },
+    { label: t("formEmail"), name: "email", type: "email", placeholder: t("formEmailPlaceholder"), required: true },
+    { label: t("formPhone"), name: "phone", type: "tel", placeholder: t("formPhonePlaceholder"), required: false },
   ];
 
   return (
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--navy-deep)] pt-[120px] pb-28 lg:pt-[140px] lg:pb-36">
+        <div className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero-funds.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.35 }} />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
         <div className="pointer-events-none absolute -left-24 -top-24 h-[600px] w-[600px] rounded-full bg-gold/[0.03] blur-[140px]" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <p className="section-eyebrow text-gold mb-5">{t("heroEyebrow")}</p>
@@ -324,9 +333,52 @@ export default function FundsPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setIsSubmitting(true);
+                  setSubmitError(null);
+                  setFieldErrors({});
+
+                  const form = e.currentTarget;
+                  const formData = new FormData(form);
+
+                  // 收集选中的 fund types
+                  const fundTypes = formData.getAll("fundType") as string[];
+                  // 收集选中的 regions
+                  const regions = formData.getAll("region") as string[];
+
+                  const payload: Record<string, unknown> = {
+                    name: formData.get("name") || "",
+                    institution: formData.get("institution") || "",
+                    position: formData.get("position") || "",
+                    email: formData.get("email") || "",
+                    phone: formData.get("phone") || "",
+                    fund_types: fundTypes,
+                    regions,
+                    investment_size: formData.get("investmentSize") || "",
+                  };
+
+                  const result: FormSubmitResult = await submitFormJSON("/api/forms/lp-interest", payload);
+
+                  setIsSubmitting(false);
+
+                  if (result.ok) {
+                    setSubmitted(true);
+                  } else {
+                    setSubmitError(result.message);
+                    if (result.fieldErrors) {
+                      setFieldErrors(result.fieldErrors);
+                    }
+                  }
+                }}
                 className="mt-12 flex flex-col gap-5"
               >
+                {submitError && (
+                  <div className="flex items-center gap-2 border border-red-500/20 bg-red-500/5 px-4 py-3 text-[13px] text-red-400">
+                    <Warning className="h-4 w-4 shrink-0" />
+                    <span>{submitError}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {FORM_FIELDS.map((field) => (
                     <div key={field.label}>
@@ -335,10 +387,14 @@ export default function FundsPage() {
                       </label>
                       <input
                         type={field.type}
+                        name={field.name}
                         required={field.required}
-                        className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]"
+                        className={`h-11 w-full border ${fieldErrors[field.name] ? "border-red-500/50" : "border-white/[0.08]"} bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]`}
                         placeholder={field.placeholder}
                       />
+                      {fieldErrors[field.name] && (
+                        <p className="mt-1 text-[11px] text-red-400">{fieldErrors[field.name]}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -356,6 +412,9 @@ export default function FundsPage() {
                       </label>
                     ))}
                   </div>
+                  {fieldErrors["fund_types"] && (
+                    <p className="mt-1 text-[11px] text-red-400">{fieldErrors["fund_types"]}</p>
+                  )}
                 </div>
 
                 {/* Region multi-select */}
@@ -376,20 +435,33 @@ export default function FundsPage() {
                 {/* Investment size */}
                 <div>
                   <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formInvestmentSize")}</label>
-                  <select className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 focus:border-gold/40 focus:bg-white/[0.05] [&>option]:bg-navy [&>option]:text-white" defaultValue="">
+                  <select name="investmentSize" className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 focus:border-gold/40 focus:bg-white/[0.05] [&>option]:bg-navy [&>option]:text-white" defaultValue="">
                     <option value="" disabled>Select range</option>
                     <option>$1M - $10M</option>
                     <option>$10M - $50M</option>
                     <option>$50M+</option>
                   </select>
+                  {fieldErrors["investment_size"] && (
+                    <p className="mt-1 text-[11px] text-red-400">{fieldErrors["investment_size"]}</p>
+                  )}
                 </div>
 
                 <button
                   type="submit"
-                  className="group relative mt-2 inline-flex h-12 w-fit items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)] active:-translate-y-[1px]"
+                  disabled={isSubmitting}
+                  className="group relative mt-2 inline-flex h-12 w-fit items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)] active:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {t("formSubmit")}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  {isSubmitting ? (
+                    <>
+                      <CircleNotch className="h-4 w-4 animate-spin" />
+                      {t("formSubmit")}
+                    </>
+                  ) : (
+                    <>
+                      {t("formSubmit")}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </>
+                  )}
                 </button>
               </motion.form>
             )}

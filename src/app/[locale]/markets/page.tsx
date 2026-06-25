@@ -83,6 +83,11 @@ export default function MarketsPage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--navy-deep)] pt-[120px] pb-28 lg:pt-[140px] lg:pb-36">
+        <div className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero-markets.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.35 }} />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
         <div className="pointer-events-none absolute inset-0 perspective-grid opacity-15" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <p className="section-eyebrow text-gold/70 mb-5">{t("heroEyebrow")}</p>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, ArrowUpRight, CheckCircle, Download } from "@phosphor-icons/react";
+import { ArrowRight, ArrowUpRight, CheckCircle, Download, CircleNotch, Warning } from "@phosphor-icons/react";
+import { submitFormJSON } from "@/lib/form-client";
 
 const FEATURE_ARTICLE = {
   category: "Market Report",
@@ -11,7 +12,7 @@ const FEATURE_ARTICLE = {
     "Vietnam and Thailand lead regional growth with 3.2 GW of new capacity, driven by favorable FIT policies and growing institutional investor appetite for renewable infrastructure.",
   date: "Dec 2025",
   readTime: "8 min",
-  image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800&q=80&auto=format",
+  image: "/images/insights/art-1.png",
 };
 
 const SIDEBAR_ARTICLES = [
@@ -34,6 +35,8 @@ const CATEGORY_FILTERS = ["All", "Market Analysis", "ESG", "Fund Updates", "Poli
 export function Insights() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   return (
     <section id="insights" className="relative overflow-hidden bg-[var(--navy-deep)] py-32 lg:py-44">
@@ -220,33 +223,59 @@ export function Insights() {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-[13px] text-white/30">
                 Subscribe to receive insights directly to your inbox
               </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubscribed(true);
-                }}
-                className="flex gap-2"
-              >
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-10 w-56 border border-white/[0.08] bg-white/[0.03] px-3.5 text-[13px] text-white outline-none transition-all duration-300 placeholder:text-white/20 focus:border-accent/40"
-                  placeholder="your@email.com"
-                />
-                <button
-                  type="submit"
-                  className="group inline-flex h-10 items-center gap-2 bg-accent px-5 text-[11px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90"
+              <div className="flex flex-col gap-2">
+                {subscribeError && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-red-400">
+                    <Warning className="h-3 w-3 shrink-0" />
+                    <span>{subscribeError}</span>
+                  </div>
+                )}
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setIsSubscribing(true);
+                    setSubscribeError(null);
+
+                    const result = await submitFormJSON("/api/forms/newsletter", { email });
+
+                    setIsSubscribing(false);
+
+                    if (result.ok) {
+                      setSubscribed(true);
+                    } else {
+                      setSubscribeError(result.message);
+                    }
+                  }}
+                  className="flex gap-2"
                 >
-                  Subscribe
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </button>
-              </form>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-10 w-56 border border-white/[0.08] bg-white/[0.03] px-3.5 text-[13px] text-white outline-none transition-all duration-300 placeholder:text-white/20 focus:border-accent/40"
+                    placeholder="your@email.com"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="group inline-flex h-10 items-center gap-2 bg-accent px-5 text-[11px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubscribing ? (
+                      <CircleNotch className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <>
+                        Subscribe
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
           )}
         </motion.div>

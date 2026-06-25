@@ -43,7 +43,7 @@ export function Hero() {
 
   const STATS = [
     { value: 240, prefix: "$", suffix: "M+", label: t("stat1Label") },
-    { value: 2.7, prefix: "", suffix: " GW", label: t("stat2Label") },
+    { value: 28, prefix: "", suffix: "", label: t("stat2Label") },
     { value: 480, prefix: "", suffix: "K", label: t("stat3Label") },
   ];
 

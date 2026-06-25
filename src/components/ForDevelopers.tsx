@@ -5,34 +5,40 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
   CheckCircle,
+  CircleNotch,
+  Warning,
 } from "@phosphor-icons/react";
+import { submitFormJSON, type FormSubmitResult } from "@/lib/form-client";
 
 const SERVICES = [
   {
     title: "Project Co-Investment",
     description:
       "Access capital from our development or equity funds to build your solar, storage, or wind project. We provide structured financing tailored to each stage of the project lifecycle, from early-stage development risk to construction and operation.",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80&auto=format",
+    image: "/images/services/coinvest.png",
     imageAlt: "Solar panels in golden light",
   },
   {
     title: "Permit Transfer",
     description:
       "If your project doesn't fit our investment criteria, we connect you with qualified buyers in our network of over 50 institutional partners. Our team manages the entire transfer process — from valuation to closing.",
-    image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1200&q=80&auto=format",
+    image: "/images/services/permit.png",
     imageAlt: "Energy infrastructure planning",
   },
   {
     title: "COD Acquisition",
     description:
       "Sell your operational assets to our COD fund and unlock capital for your next development. We acquire commercial-operation-date projects with stable power purchase agreements, providing developers with liquidity to reinvest.",
-    image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=1200&q=80&auto=format",
+    image: "/images/services/cod-acquisition.png",
     imageAlt: "Wind turbines in operation",
   },
 ];
 
 export function ForDevelopers() {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   return (
     <section id="developers" className="relative overflow-hidden bg-[var(--navy-lift)] py-32 lg:py-44">
@@ -141,16 +147,53 @@ export function ForDevelopers() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
-                      setSubmitted(true);
+                      setIsSubmitting(true);
+                      setSubmitError(null);
+                      setFieldErrors({});
+
+                      const form = e.currentTarget;
+                      const formData = new FormData(form);
+
+                      const company = (formData.get("company") as string) || "";
+                      const email = (formData.get("email") as string) || "";
+                      const region = (formData.get("region") as string) || "";
+                      const projectType = (formData.get("projectType") as string) || "";
+
+                      const payload: Record<string, unknown> = {
+                        form_type: "general",
+                        name: company,
+                        email,
+                        subject: "Developer Partnership Inquiry",
+                        message: `Region: ${region}\nProject Type: ${projectType}`,
+                      };
+
+                      const result: FormSubmitResult = await submitFormJSON("/api/forms/contact", payload);
+
+                      setIsSubmitting(false);
+
+                      if (result.ok) {
+                        setSubmitted(true);
+                      } else {
+                        setSubmitError(result.message);
+                        if (result.fieldErrors) {
+                          setFieldErrors(result.fieldErrors);
+                        }
+                      }
                     }}
                     className="flex flex-col gap-5"
                   >
+                    {submitError && (
+                      <div className="flex items-center gap-2 border border-red-500/20 bg-red-500/5 px-4 py-3 text-[13px] text-red-400">
+                        <Warning className="h-4 w-4 shrink-0" />
+                        <span>{submitError}</span>
+                      </div>
+                    )}
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                       {[
-                        { label: "Company", type: "text", placeholder: "Your company" },
-                        { label: "Email", type: "email", placeholder: "you@company.com" },
+                        { label: "Company", name: "company", type: "text", placeholder: "Your company" },
+                        { label: "Email", name: "email", type: "email", placeholder: "you@company.com" },
                       ].map((field) => (
                         <div key={field.label}>
                           <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">
@@ -158,10 +201,14 @@ export function ForDevelopers() {
                           </label>
                           <input
                             type={field.type}
+                            name={field.name}
                             required
-                            className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]"
+                            className={`h-11 w-full border ${fieldErrors[field.name] || (field.name === "company" && fieldErrors["name"]) ? "border-red-500/50" : "border-white/[0.08]"} bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]`}
                             placeholder={field.placeholder}
                           />
+                          {(fieldErrors[field.name] || (field.name === "company" && fieldErrors["name"])) && (
+                            <p className="mt-1 text-[11px] text-red-400">{fieldErrors[field.name] || fieldErrors["name"]}</p>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -170,6 +217,7 @@ export function ForDevelopers() {
                         Region
                       </label>
                       <select
+                        name="region"
                         required
                         className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 focus:border-gold/40 focus:bg-white/[0.05] [&>option]:bg-navy [&>option]:text-white"
                         defaultValue=""
@@ -199,10 +247,20 @@ export function ForDevelopers() {
                     </div>
                     <button
                       type="submit"
-                      className="group relative mt-2 inline-flex h-12 w-fit items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)] active:-translate-y-[1px]"
+                      disabled={isSubmitting}
+                      className="group relative mt-2 inline-flex h-12 w-fit items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)] active:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Submit
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      {isSubmitting ? (
+                        <>
+                          <CircleNotch className="h-4 w-4 animate-spin" />
+                          Submit
+                        </>
+                      ) : (
+                        <>
+                          Submit
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </>
+                      )}
                     </button>
                   </motion.form>
                 )}

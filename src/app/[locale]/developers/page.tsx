@@ -1,39 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight, CheckCircle, CaretDown,
   Handshake, FileText, ClipboardText, Rocket,
+  CircleNotch, Warning,
 } from "@phosphor-icons/react";
+import { submitFormData, type FormSubmitResult } from "@/lib/form-client";
 
 export default function DevelopersPage() {
   const t = useTranslations("developers");
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const SERVICES = [
     {
       title: t("coInvestTitle"),
       desc: t("coInvestDesc"),
       details: [t("coInvest1"), t("coInvest2"), t("coInvest3"), t("coInvest4")],
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80&auto=format",
+      image: "/images/services/coinvest.png",
       imageAlt: "Solar panels in golden light",
     },
     {
       title: t("permitTitle"),
       desc: t("permitDesc"),
       details: [t("permit1"), t("permit2"), t("permit3"), t("permit4")],
-      image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=1200&q=80&auto=format",
+      image: "/images/services/permit.png",
       imageAlt: "Energy infrastructure planning",
     },
     {
       title: t("codTitle"),
       desc: t("codDesc"),
       details: [t("cod1"), t("cod2"), t("cod3"), t("cod4")],
-      image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=1200&q=80&auto=format",
+      image: "/images/services/cod-acquisition.png",
       imageAlt: "Wind turbines in operation",
     },
   ];
@@ -79,6 +86,11 @@ export default function DevelopersPage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--navy-deep)] pt-[120px] pb-28 lg:pt-[140px] lg:pb-36">
+        <div className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero-developers.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.35 }} />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <p className="section-eyebrow text-gold mb-5">{t("heroEyebrow")}</p>
           <h1 className="font-heading text-5xl leading-[1.05] tracking-[-0.02em] text-white md:text-6xl lg:text-7xl max-w-4xl">
@@ -213,10 +225,66 @@ export default function DevelopersPage() {
             ) : (
               <motion.form
                 key="form"
+                ref={formRef}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onSubmit={(e) => { e.preventDefault(); if (step < 3) setStep(step + 1); else setSubmitted(true); }}
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (step < 3) {
+                    setStep(step + 1);
+                    return;
+                  }
+
+                  // Final step: submit to API
+                  setIsSubmitting(true);
+                  setSubmitError(null);
+                  setFieldErrors({});
+
+                  const form = formRef.current!;
+                  const formData = new FormData(form);
+
+                  // 确保所有字段名称映射到 API 期望的字段名
+                  const apiFormData = new FormData();
+                  apiFormData.set("company_name", (formData.get("company_name") as string) || "");
+                  apiFormData.set("contact_name", (formData.get("contact_name") as string) || "");
+                  apiFormData.set("email", (formData.get("email") as string) || "");
+                  apiFormData.set("region", (formData.get("region") as string) || "");
+                  apiFormData.set("project_type", (formData.get("projectType") as string) || "");
+                  apiFormData.set("capacity_mw", (formData.get("capacity_mw") as string) || "");
+                  apiFormData.set("project_stage", (formData.get("stage") as string) || "");
+                  apiFormData.set("expected_construction_date", (formData.get("expected_construction_date") as string) || "");
+                  apiFormData.set("notes", (formData.get("notes") as string) || "");
+
+                  // 附加文件
+                  if (fileInputRef.current?.files) {
+                    for (const file of Array.from(fileInputRef.current.files)) {
+                      apiFormData.append("files", file);
+                    }
+                  }
+
+                  const result: FormSubmitResult = await submitFormData("/api/forms/developer", apiFormData);
+
+                  setIsSubmitting(false);
+
+                  if (result.ok) {
+                    setSubmitted(true);
+                  } else {
+                    setSubmitError(result.message);
+                    if (result.fieldErrors) {
+                      setFieldErrors(result.fieldErrors);
+                      // 如果有 step 1/2 的字段错误，导航到对应步骤
+                      const step1Fields = ["company_name", "contact_name", "email"];
+                      const step2Fields = ["region", "project_type", "capacity_mw"];
+                      const errorFields = Object.keys(result.fieldErrors);
+                      if (errorFields.some((f) => step1Fields.includes(f))) {
+                        setStep(1);
+                      } else if (errorFields.some((f) => step2Fields.includes(f))) {
+                        setStep(2);
+                      }
+                    }
+                  }
+                }}
                 className="mt-12"
               >
                 {/* Progress bar */}
@@ -231,17 +299,27 @@ export default function DevelopersPage() {
                   ))}
                 </div>
 
+                {submitError && (
+                  <div className="mb-6 flex items-center gap-2 border border-red-500/20 bg-red-500/5 px-4 py-3 text-[13px] text-red-400">
+                    <Warning className="h-4 w-4 shrink-0" />
+                    <span>{submitError}</span>
+                  </div>
+                )}
+
                 <AnimatePresence mode="wait">
                   {step === 1 && (
                     <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-5">
                       {[
-                        { label: t("formCompany"), type: "text", placeholder: t("formCompanyPh") },
-                        { label: t("formContact"), type: "text", placeholder: t("formContactPh") },
-                        { label: t("formEmail"), type: "email", placeholder: t("formEmailPh") },
+                        { label: t("formCompany"), name: "company_name", type: "text", placeholder: t("formCompanyPh") },
+                        { label: t("formContact"), name: "contact_name", type: "text", placeholder: t("formContactPh") },
+                        { label: t("formEmail"), name: "email", type: "email", placeholder: t("formEmailPh") },
                       ].map((field) => (
-                        <div key={field.label}>
+                        <div key={field.name}>
                           <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{field.label} <span className="text-gold/50">*</span></label>
-                          <input type={field.type} required className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]" placeholder={field.placeholder} />
+                          <input type={field.type} name={field.name} required className={`h-11 w-full border ${fieldErrors[field.name] ? "border-red-500/50" : "border-white/[0.08]"} bg-white/[0.03] px-3.5 text-[14px] text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-gold/40 focus:bg-white/[0.05]`} placeholder={field.placeholder} />
+                          {fieldErrors[field.name] && (
+                            <p className="mt-1 text-[11px] text-red-400">{fieldErrors[field.name]}</p>
+                          )}
                         </div>
                       ))}
                     </motion.div>
@@ -250,10 +328,13 @@ export default function DevelopersPage() {
                     <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-5">
                       <div>
                         <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formRegion")} <span className="text-gold/50">*</span></label>
-                        <select required className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40 [&>option]:bg-navy" defaultValue="">
+                        <select name="region" required className={`h-11 w-full border ${fieldErrors["region"] ? "border-red-500/50" : "border-white/[0.08]"} bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40 [&>option]:bg-navy`} defaultValue="">
                           <option value="" disabled>{t("formSelectRegion")}</option>
                           <option>Southeast Asia</option><option>China</option><option>Australia</option><option>Europe</option><option>Other</option>
                         </select>
+                        {fieldErrors["region"] && (
+                          <p className="mt-1 text-[11px] text-red-400">{fieldErrors["region"]}</p>
+                        )}
                       </div>
                       <div>
                         <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formProjectType")} <span className="text-gold/50">*</span></label>
@@ -265,10 +346,16 @@ export default function DevelopersPage() {
                             </label>
                           ))}
                         </div>
+                        {fieldErrors["project_type"] && (
+                          <p className="mt-1 text-[11px] text-red-400">{fieldErrors["project_type"]}</p>
+                        )}
                       </div>
                       <div>
                         <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formCapacity")} <span className="text-gold/50">*</span></label>
-                        <input type="number" required className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40 placeholder:text-white/15" placeholder={t("formCapacityPh")} />
+                        <input type="number" name="capacity_mw" required className={`h-11 w-full border ${fieldErrors["capacity_mw"] ? "border-red-500/50" : "border-white/[0.08]"} bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40 placeholder:text-white/15`} placeholder={t("formCapacityPh")} />
+                        {fieldErrors["capacity_mw"] && (
+                          <p className="mt-1 text-[11px] text-red-400">{fieldErrors["capacity_mw"]}</p>
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -284,14 +371,28 @@ export default function DevelopersPage() {
                             </label>
                           ))}
                         </div>
+                        {fieldErrors["project_stage"] && (
+                          <p className="mt-1 text-[11px] text-red-400">{fieldErrors["project_stage"]}</p>
+                        )}
                       </div>
                       <div>
                         <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formConstructionDate")}</label>
-                        <input type="date" className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40" />
+                        <input type="date" name="expected_construction_date" className="h-11 w-full border border-white/[0.08] bg-white/[0.03] px-3.5 text-[14px] text-white outline-none focus:border-gold/40" />
                       </div>
                       <div>
                         <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formNotes")}</label>
-                        <textarea rows={3} className="w-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-[14px] text-white outline-none focus:border-gold/40 placeholder:text-white/15 resize-none" placeholder={t("formNotesPh")} />
+                        <textarea name="notes" rows={3} className="w-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-3 text-[14px] text-white outline-none focus:border-gold/40 placeholder:text-white/15 resize-none" placeholder={t("formNotesPh")} />
+                      </div>
+                      <div>
+                        <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/30">{t("formFiles") ?? "Files"}</label>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                          className="w-full text-[13px] text-white/50 file:mr-3 file:border file:border-white/[0.08] file:bg-white/[0.03] file:px-4 file:py-2 file:text-[12px] file:text-white/50 file:cursor-pointer hover:file:border-gold/40"
+                        />
+                        <p className="mt-1 text-[10px] text-white/20">PDF, DOC, DOCX, XLS, XLSX, JPG, PNG（最多 5 个文件，每个 ≤ 10MB）</p>
                       </div>
                     </motion.div>
                   )}
@@ -304,9 +405,22 @@ export default function DevelopersPage() {
                       {t("formPrevious")}
                     </button>
                   )}
-                  <button type="submit" className="group h-12 inline-flex items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)]">
-                    {step < 3 ? t("formNext") : t("formSubmitProject")}
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="group h-12 inline-flex items-center justify-center gap-2.5 bg-accent px-8 text-[12px] font-semibold uppercase tracking-[0.1em] text-navy transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_30px_oklch(0.70_0.12_78/25%)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <CircleNotch className="h-4 w-4 animate-spin" />
+                        {t("formSubmitProject")}
+                      </>
+                    ) : (
+                      <>
+                        {step < 3 ? t("formNext") : t("formSubmitProject")}
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
                   </button>
                 </div>
               </motion.form>

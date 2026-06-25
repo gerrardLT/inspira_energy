@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
-import { ArrowRight, ChartLineUp, Wrench } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
 
 export function HomepageCTA() {
@@ -27,7 +27,7 @@ export function HomepageCTA() {
             {t("ctaTitle")}{" "}
             <span className="italic text-gold">{t("ctaTitleAccent")}</span>?
           </h2>
-          <p className="narrative-text mt-6 text-lg text-white/35">
+          <p className="mt-6 text-xl leading-relaxed tracking-[-0.01em] text-white/35 max-w-[60ch]">
             {t("ctaDesc")}
           </p>
         </motion.div>
@@ -43,16 +43,15 @@ export function HomepageCTA() {
           >
             <Link
               href="/funds"
-              className="group block border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-500 hover:border-gold/20 hover:bg-white/[0.04] hover:-translate-y-1"
+              className="group block border border-gold/10 bg-gold/[0.03] p-8 transition-all duration-500 hover:border-gold/25 hover:bg-gold/[0.06] hover:-translate-y-1"
             >
-              <ChartLineUp className="h-8 w-8 text-gold/50 mb-6" weight="duotone" />
-              <h3 className="font-heading text-2xl tracking-tight text-white/80 group-hover:text-white transition-colors">
+              <h3 className="font-heading text-2xl tracking-tight text-white/90 group-hover:text-white transition-colors">
                 {t("investorCard")}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-white/30 max-w-[40ch]">
+              <p className="mt-3 text-[13px] leading-relaxed text-white/35 max-w-[40ch]">
                 {t("investorCardDesc")}
               </p>
-              <div className="mt-6 flex items-center gap-2 text-gold/60 group-hover:text-gold transition-colors">
+              <div className="mt-6 flex items-center gap-2 text-gold/70 group-hover:text-gold transition-colors">
                 <span className="text-[12px] font-semibold uppercase tracking-[0.1em]">
                   {t("viewFunds")}
                 </span>
@@ -70,16 +69,15 @@ export function HomepageCTA() {
           >
             <Link
               href="/developers"
-              className="group block border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-500 hover:border-gold/20 hover:bg-white/[0.04] hover:-translate-y-1"
+              className="group block border border-teal/10 bg-teal/[0.03] p-8 transition-all duration-500 hover:border-teal/25 hover:bg-teal/[0.06] hover:-translate-y-1"
             >
-              <Wrench className="h-8 w-8 text-gold/50 mb-6" weight="duotone" />
-              <h3 className="font-heading text-2xl tracking-tight text-white/80 group-hover:text-white transition-colors">
+              <h3 className="font-heading text-2xl tracking-tight text-white/90 group-hover:text-white transition-colors">
                 {t("developerCard")}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-white/30 max-w-[40ch]">
+              <p className="mt-3 text-[13px] leading-relaxed text-white/35 max-w-[40ch]">
                 {t("developerCardDesc")}
               </p>
-              <div className="mt-6 flex items-center gap-2 text-gold/60 group-hover:text-gold transition-colors">
+              <div className="mt-6 flex items-center gap-2 text-teal/70 group-hover:text-teal transition-colors">
                 <span className="text-[12px] font-semibold uppercase tracking-[0.1em]">
                   {t("developerServices")}
                 </span>

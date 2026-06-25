@@ -10,21 +10,21 @@ const TEAM = [
     role: "Managing Partner",
     bio: "Previously led APAC clean energy investments at a major Singaporean sovereign fund. $1.2B deployed across 40+ projects.",
     photo:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format",
+      "/images/team/wei.png",
   },
   {
     name: "Sarah Lim",
     role: "Head of Investments",
     bio: "Former VP at a global infrastructure bank, specializing in Southeast Asian markets. Structured 25+ renewable energy deals.",
     photo:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80&auto=format",
+      "/images/team/sarah.png",
   },
   {
     name: "David Zhang",
     role: "Director, China Operations",
     bio: "Founded two successful EPC companies before joining Inspira to bridge Chinese developers with global capital. Built 3 GW of solar capacity.",
     photo:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80&auto=format",
+      "/images/team/david.png",
   },
 ];
 
@@ -63,13 +63,13 @@ export function AboutTeam() {
       <div className="pointer-events-none absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1920&q=80&auto=format"
+          src="/images/hero-about.png"
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ opacity: 0.04 }}
+          style={{ opacity: 0.3 }}
         />
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
         {/* Header */}

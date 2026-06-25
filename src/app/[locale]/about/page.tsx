@@ -34,21 +34,21 @@ export default function AboutPage() {
       name: t("weiName"),
       role: t("weiRole"),
       bio: t("weiBio"),
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format",
+      photo: "/images/team/wei.png",
       tags: [t("weiTag1"), t("weiTag2"), t("weiTag3")],
     },
     {
       name: t("sarahName"),
       role: t("sarahRole"),
       bio: t("sarahBio"),
-      photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80&auto=format",
+      photo: "/images/team/sarah.png",
       tags: [t("sarahTag1"), t("sarahTag2"), t("sarahTag3")],
     },
     {
       name: t("davidName"),
       role: t("davidRole"),
       bio: t("davidBio"),
-      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80&auto=format",
+      photo: "/images/team/david.png",
       tags: [t("davidTag1"), t("davidTag2"), t("davidTag3")],
     },
     {
@@ -109,13 +109,13 @@ export default function AboutPage() {
       <section className="relative overflow-hidden bg-[var(--navy-deep)] pt-[120px] pb-28 lg:pt-[140px] lg:pb-36">
         <div className="pointer-events-none absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1920&q=80&auto=format"
+            src="/images/hero-about.png"
             alt=""
             className="h-full w-full object-cover"
-            style={{ opacity: 0.04 }}
+            style={{ opacity: 0.3 }}
           />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/80 via-[var(--navy-deep)]/90 to-[var(--navy-deep)]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <div className="max-w-3xl">

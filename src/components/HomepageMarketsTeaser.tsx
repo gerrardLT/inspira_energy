@@ -54,7 +54,7 @@ export function HomepageMarketsTeaser() {
               {t("marketsTitle")}{" "}
               <span className="italic text-gold">{t("marketsTitleAccent")}</span>
             </h2>
-            <p className="narrative-text mt-6 text-lg text-white/35">
+            <p className="mt-6 text-xl leading-relaxed tracking-[-0.01em] text-white/35 max-w-[60ch]">
               {t("marketsDesc")}
             </p>
 

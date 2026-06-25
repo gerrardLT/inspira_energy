@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   EnvelopeSimple, Phone, MapPin, Clock, ArrowRight,
   CheckCircle, Buildings, Bank, ChartLineUp, Lightning,
-  Globe, User, Briefcase, ChatText,
+  Globe, User, Briefcase, ChatText, CircleNotch, Warning,
 } from "@phosphor-icons/react";
+import { submitFormJSON, type FormSubmitResult } from "@/lib/form-client";
 
 type FormMode = "investor" | "general";
 
@@ -41,13 +42,57 @@ export default function ContactPage() {
   const [genSubject, setGenSubject] = useState("");
   const [genMessage, setGenMessage] = useState("");
 
+  // Submission state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   const toggleMulti = (arr: string[], setArr: (v: string[]) => void, val: string) => {
     setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setFieldErrors({});
+
+    let payload: Record<string, unknown>;
+
+    if (formMode === "investor") {
+      payload = {
+        form_type: "investor",
+        name: invName,
+        company: invCompany,
+        position: invTitle,
+        email: invEmail,
+        phone: invPhone,
+        fund_types: invFunds,
+        regions: invRegions,
+        investment_size: invSize,
+      };
+    } else {
+      payload = {
+        form_type: "general",
+        name: genName,
+        email: genEmail,
+        subject: genSubject,
+        message: genMessage,
+      };
+    }
+
+    const result: FormSubmitResult = await submitFormJSON("/api/forms/contact", payload);
+
+    setIsSubmitting(false);
+
+    if (result.ok) {
+      setSubmitted(true);
+    } else {
+      setSubmitError(result.message);
+      if (result.fieldErrors) {
+        setFieldErrors(result.fieldErrors);
+      }
+    }
   };
 
   const INVESTMENT_SIZES = [t("under500k"), t("size500k1m"), t("size1m5m"), t("size5m20m"), t("size20m")];
@@ -81,6 +126,10 @@ export default function ContactPage() {
     <div className="bg-[#0a0a14] text-white">
       {/* ── Hero ──────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-[160px] pb-20 lg:pt-[200px] lg:pb-28">
+        <div className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero-contact.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.3 }} />
+        </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gold/[0.04] via-transparent to-transparent" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <motion.p
@@ -287,6 +336,12 @@ export default function ContactPage() {
                       onSubmit={handleSubmit}
                       className="mt-8 rounded-lg border border-white/[0.06] bg-white/[0.01] p-8 lg:p-10"
                     >
+                      {submitError && (
+                        <div className="mb-6 flex items-center gap-2 border border-red-500/20 bg-red-500/5 px-4 py-3 text-[13px] text-red-400 rounded-md">
+                          <Warning className="h-4 w-4 shrink-0" />
+                          <span>{submitError}</span>
+                        </div>
+                      )}
                       <AnimatePresence mode="wait">
                         {formMode === "investor" ? (
                           <motion.div
@@ -311,6 +366,7 @@ export default function ContactPage() {
                                 value={invName}
                                 onChange={setInvName}
                                 placeholder={t("fullNamePh")}
+                                error={fieldErrors["name"]}
                               />
                               <Field
                                 icon={Buildings}
@@ -319,6 +375,7 @@ export default function ContactPage() {
                                 value={invCompany}
                                 onChange={setInvCompany}
                                 placeholder={t("institutionPh")}
+                                error={fieldErrors["company"]}
                               />
                               <Field
                                 icon={Briefcase}
@@ -326,6 +383,7 @@ export default function ContactPage() {
                                 value={invTitle}
                                 onChange={setInvTitle}
                                 placeholder={t("positionPh")}
+                                error={fieldErrors["position"]}
                               />
                               <Field
                                 icon={EnvelopeSimple}
@@ -335,6 +393,7 @@ export default function ContactPage() {
                                 value={invEmail}
                                 onChange={setInvEmail}
                                 placeholder={t("emailPh")}
+                                error={fieldErrors["email"]}
                               />
                               <Field
                                 icon={Phone}
@@ -342,6 +401,7 @@ export default function ContactPage() {
                                 value={invPhone}
                                 onChange={setInvPhone}
                                 placeholder={t("phonePh")}
+                                error={fieldErrors["phone"]}
                               />
                               <div>
                                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
@@ -434,6 +494,7 @@ export default function ContactPage() {
                                 value={genName}
                                 onChange={setGenName}
                                 placeholder={t("namePh")}
+                                error={fieldErrors["name"]}
                               />
                               <Field
                                 icon={EnvelopeSimple}
@@ -443,6 +504,7 @@ export default function ContactPage() {
                                 value={genEmail}
                                 onChange={setGenEmail}
                                 placeholder="you@email.com"
+                                error={fieldErrors["email"]}
                               />
                             </div>
 
@@ -454,8 +516,9 @@ export default function ContactPage() {
                                 value={genSubject}
                                 onChange={(e) => setGenSubject(e.target.value)}
                                 placeholder={t("subjectPh")}
-                                className="mt-2 w-full rounded-md border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30"
+                                className={`mt-2 w-full rounded-md border ${fieldErrors["subject"] ? "border-red-500/50" : "border-white/[0.06]"} bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30`}
                               />
+                              {fieldErrors["subject"] && <p className="mt-1 text-[11px] text-red-400">{fieldErrors["subject"]}</p>}
                             </div>
 
                             <div className="mt-6">
@@ -467,8 +530,9 @@ export default function ContactPage() {
                                 onChange={(e) => setGenMessage(e.target.value)}
                                 rows={6}
                                 placeholder={t("messagePh")}
-                                className="mt-2 w-full resize-none rounded-md border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30"
+                                className={`mt-2 w-full resize-none rounded-md border ${fieldErrors["message"] ? "border-red-500/50" : "border-white/[0.06]"} bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30`}
                               />
+                              {fieldErrors["message"] && <p className="mt-1 text-[11px] text-red-400">{fieldErrors["message"]}</p>}
                             </div>
                           </motion.div>
                         )}
@@ -482,10 +546,20 @@ export default function ContactPage() {
                         </p>
                         <button
                           type="submit"
-                          className="group flex items-center gap-3 rounded-full border border-gold/30 bg-gold/10 px-8 py-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-gold transition-all duration-300 hover:bg-gold/20 hover:shadow-[0_0_24px_oklch(0.70_0.12_78/20%)]"
+                          disabled={isSubmitting}
+                          className="group flex items-center gap-3 rounded-full border border-gold/30 bg-gold/10 px-8 py-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-gold transition-all duration-300 hover:bg-gold/20 hover:shadow-[0_0_24px_oklch(0.70_0.12_78/20%)] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {t("sendInquiry")}
-                          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                          {isSubmitting ? (
+                            <>
+                              <CircleNotch className="h-4 w-4 animate-spin" />
+                              {t("sendInquiry")}
+                            </>
+                          ) : (
+                            <>
+                              {t("sendInquiry")}
+                              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                            </>
+                          )}
                         </button>
                       </div>
                     </form>
@@ -548,6 +622,7 @@ function Field({
   onChange,
   placeholder,
   type = "text",
+  error,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
@@ -556,6 +631,7 @@ function Field({
   onChange: (v: string) => void;
   placeholder?: string;
   type?: string;
+  error?: string;
 }) {
   return (
     <div>
@@ -570,8 +646,9 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-md border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30"
+        className={`mt-2 w-full rounded-md border ${error ? "border-red-500/50" : "border-white/[0.06]"} bg-white/[0.02] px-4 py-3 text-[13px] text-white/60 outline-none transition-colors placeholder:text-white/20 focus:border-gold/30`}
       />
+      {error && <p className="mt-1 text-[11px] text-red-400">{error}</p>}
     </div>
   );
 }

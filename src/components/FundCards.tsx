@@ -28,7 +28,7 @@ const FUNDS = [
     targetReturn: "15-22%",
     tag: "Growth",
     featured: true,
-    image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1200&q=80&auto=format",
+    image: "/images/funds/equity.png",
     imageAlt: "Aerial view of large-scale solar farm",
   },
   {

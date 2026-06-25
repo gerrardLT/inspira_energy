@@ -22,14 +22,14 @@ export function SocialProof() {
       author: t("testimonial1Author"),
       title: t("testimonial1Title"),
       type: t("testimonial1Type"),
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80&auto=format",
+      image: "/images/testimonials/project-1.png",
     },
     {
       quote: t("testimonial2"),
       author: t("testimonial2Author"),
       title: t("testimonial2Title"),
       type: t("testimonial2Type"),
-      image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=600&q=80&auto=format",
+      image: "/images/testimonials/project-2.png",
     },
   ];
 

@@ -24,10 +24,10 @@ export function HomepageFundsTeaser() {
         <div className="max-w-3xl">
           <p className="section-eyebrow text-gold mb-5">{t("fundsEyebrow")}</p>
           <h2 className="font-heading text-4xl leading-[1.08] tracking-[-0.02em] text-white md:text-5xl">
-            Four fund products,{" "}
+            {t("fundsTitle")}{" "}
             <span className="italic text-gold">{t("fundsTitleAccent")}</span>
           </h2>
-          <p className="narrative-text mt-6 text-lg text-white/40">
+          <p className="mt-6 text-xl leading-relaxed tracking-[-0.01em] text-white/40 max-w-[60ch]">
             {t("fundsDesc")}
           </p>
         </div>

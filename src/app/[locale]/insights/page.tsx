@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
-import { ArrowRight, ArrowUpRight, CheckCircle, Download } from "@phosphor-icons/react";
+import { ArrowRight, ArrowUpRight, CheckCircle, Download, CircleNotch, Warning } from "@phosphor-icons/react";
+import { submitFormJSON } from "@/lib/form-client";
 
 const QUARTERLY_REPORTS_DATA = [
   { quarter: "Q4 2025", dateKey: "Jan 2026" },
@@ -17,6 +18,8 @@ export default function InsightsPage() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   const FEATURED_REPORT = {
     title: t("reportTitle"),
@@ -33,7 +36,7 @@ export default function InsightsPage() {
       excerpt: t("art1Excerpt"),
       date: "Dec 2025",
       readTime: "8 min",
-      image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800&q=80&auto=format",
+      image: "/images/insights/art-1.png",
     },
     {
       category: t("art2Cat"),
@@ -41,7 +44,7 @@ export default function InsightsPage() {
       excerpt: t("art2Excerpt"),
       date: "Nov 2025",
       readTime: "5 min",
-      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80&auto=format",
+      image: "/images/insights/art-2.png",
     },
     {
       category: t("art3Cat"),
@@ -49,7 +52,7 @@ export default function InsightsPage() {
       excerpt: t("art3Excerpt"),
       date: "Oct 2025",
       readTime: "12 min",
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80&auto=format",
+      image: "/images/insights/art-3.png",
     },
     {
       category: t("art4Cat"),
@@ -57,7 +60,7 @@ export default function InsightsPage() {
       excerpt: t("art4Excerpt"),
       date: "Oct 2025",
       readTime: "6 min",
-      image: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=800&q=80&auto=format",
+      image: "/images/insights/art-4.png",
     },
     {
       category: t("art5Cat"),
@@ -65,7 +68,7 @@ export default function InsightsPage() {
       excerpt: t("art5Excerpt"),
       date: "Sep 2025",
       readTime: "7 min",
-      image: "https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=800&q=80&auto=format",
+      image: "/images/insights/art-5.png",
     },
     {
       category: t("art6Cat"),
@@ -73,7 +76,7 @@ export default function InsightsPage() {
       excerpt: t("art6Excerpt"),
       date: "Aug 2025",
       readTime: "10 min",
-      image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&q=80&auto=format",
+      image: "/images/insights/art-6.png",
     },
     {
       category: t("art7Cat"),
@@ -81,7 +84,7 @@ export default function InsightsPage() {
       excerpt: t("art7Excerpt"),
       date: "Jul 2025",
       readTime: "4 min",
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80&auto=format",
+      image: "/images/insights/art-7.png",
     },
     {
       category: t("art8Cat"),
@@ -89,7 +92,7 @@ export default function InsightsPage() {
       excerpt: t("art8Excerpt"),
       date: "Jun 2025",
       readTime: "9 min",
-      image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800&q=80&auto=format",
+      image: "/images/insights/art-8.png",
     },
   ];
 
@@ -103,6 +106,11 @@ export default function InsightsPage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--navy-deep)] pt-[120px] pb-28 lg:pt-[140px] lg:pb-36">
+        <div className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/hero-insights.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.35 }} />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy)] via-transparent to-[var(--navy)]" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">
           <p className="section-eyebrow text-accent mb-5">{t("heroEyebrow")}</p>
@@ -261,26 +269,55 @@ export default function InsightsPage() {
               <p className="text-sm text-white/50">{t("subscribed")}</p>
             </div>
           ) : (
-            <form
-              onSubmit={(e) => { e.preventDefault(); setSubscribed(true); }}
-              className="mt-8 flex gap-2 max-w-md mx-auto"
-            >
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12 flex-1 border border-white/[0.08] bg-white/[0.03] px-4 text-[14px] text-white outline-none focus:border-accent/40 placeholder:text-white/20"
-                placeholder={t("newsletterPlaceholder")}
-              />
-              <button
-                type="submit"
-                className="group inline-flex h-12 items-center gap-2 bg-accent px-6 text-[11px] font-semibold uppercase tracking-[0.1em] text-navy transition-all hover:bg-accent/90"
+            <div className="mt-8 max-w-md mx-auto">
+              {subscribeError && (
+                <div className="mb-3 flex items-center justify-center gap-2 text-[12px] text-red-400">
+                  <Warning className="h-3.5 w-3.5 shrink-0" />
+                  <span>{subscribeError}</span>
+                </div>
+              )}
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setIsSubscribing(true);
+                  setSubscribeError(null);
+
+                  const result = await submitFormJSON("/api/forms/newsletter", { email });
+
+                  setIsSubscribing(false);
+
+                  if (result.ok) {
+                    setSubscribed(true);
+                  } else {
+                    setSubscribeError(result.message);
+                  }
+                }}
+                className="flex gap-2"
               >
-                {t("subscribe")}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </button>
-            </form>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 flex-1 border border-white/[0.08] bg-white/[0.03] px-4 text-[14px] text-white outline-none focus:border-accent/40 placeholder:text-white/20"
+                  placeholder={t("newsletterPlaceholder")}
+                />
+                <button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="group inline-flex h-12 items-center gap-2 bg-accent px-6 text-[11px] font-semibold uppercase tracking-[0.1em] text-navy transition-all hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubscribing ? (
+                    <CircleNotch className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      {t("subscribe")}
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </section>
