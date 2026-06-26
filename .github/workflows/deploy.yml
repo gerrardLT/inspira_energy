@@ -46,20 +46,26 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script_stop: true
+          envs: GH_PAT
           script: |
             set -e
-            
+
+            REPO_URL="https://${GH_PAT}@github.com/gerrardLT/inspira_energy.git"
+
             echo "=== [1/6] 进入项目目录 ==="
             mkdir -p ${{ env.DEPLOY_PATH }}
             cd ${{ env.DEPLOY_PATH }}
-            
+
             echo "=== [2/6] 拉取最新代码 ==="
             if [ -d ".git" ]; then
+              git remote set-url origin "$REPO_URL"
               git fetch origin main
               git reset --hard origin/main
             else
-              git clone https://github.com/gerrardLT/inspira_energy.git .
+              git clone "$REPO_URL" .
             fi
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
             
             echo "=== [3/6] 检查 Docker 环境 ==="
             docker --version || { echo "Docker 未安装"; exit 1; }

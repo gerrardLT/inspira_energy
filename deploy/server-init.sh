@@ -1,7 +1,7 @@
 #!/bin/bash
 # ─── 服务器首次部署初始化脚本 ──────────────────────────────────────────────────────
 # 在服务器上以 root 用户执行一次即可
-# 用法: bash server-init.sh
+# 用法: GH_PAT=你的token bash server-init.sh
 #
 # 前提：Ubuntu 24 + 宝塔面板已安装
 # ─────────────────────────────────────────────────────────────────────────────────
@@ -10,6 +10,13 @@ set -e
 
 DEPLOY_PATH="/www/wwwroot/inspira_energy"
 DOMAIN="inspira.energy"
+
+# 检查 PAT 是否提供（私有仓库 clone 需要）
+if [ -z "$GH_PAT" ]; then
+  echo "❌ 缺少 GH_PAT 环境变量。用法: GH_PAT=你的token bash server-init.sh"
+  exit 1
+fi
+REPO_URL="https://${GH_PAT}@github.com/gerrardLT/inspira_energy.git"
 
 echo "=== [1/5] 安装 Docker（如未安装） ==="
 if ! command -v docker &> /dev/null; then
@@ -30,7 +37,11 @@ echo "=== [2/5] 克隆项目代码 ==="
 mkdir -p "$DEPLOY_PATH"
 cd "$DEPLOY_PATH"
 if [ ! -d ".git" ]; then
-  git clone https://github.com/gerrardLT/inspira_energy.git .
+  git clone "$REPO_URL" .
+else
+  git remote set-url origin "$REPO_URL"
+  git fetch origin main
+  git reset --hard origin/main
 fi
 
 echo "=== [3/5] 创建 .env 配置文件 ==="
