@@ -79,7 +79,7 @@ jobs:
             
             echo "=== [5/6] 构建并启动服务 ==="
             docker compose -f docker-compose.prod.yml down --remove-orphans || true
-            docker compose -f docker-compose.prod.yml build --no-cache app
+            docker compose -f docker-compose.prod.yml build app
             docker compose -f docker-compose.prod.yml up -d
             
             echo "=== [6/6] 执行数据库迁移 ==="

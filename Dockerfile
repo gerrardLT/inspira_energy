@@ -2,17 +2,26 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
+# 使用国内镜像源加速依赖下载
+RUN npm config set registry https://registry.npmmirror.com
+
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev
+# 使用 npm install 而非 npm ci，容忍 lock 文件版本范围差异
+RUN npm install --omit=dev --no-audit --no-fund
 
 # ─── Stage 2: Build ──────────────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+RUN npm config set registry https://registry.npmmirror.com
+
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 
 COPY . .
+
+# 提高 Node 构建堆内存上限，防止重型 3D 依赖（three/r3f）构建时 OOM
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
 # 构建时不需要运行时环境变量，使用占位值通过 env.ts 验证
 ENV DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
