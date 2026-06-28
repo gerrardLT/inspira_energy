@@ -1,22 +1,18 @@
-# ─── Stage 1: Dependencies ────────────────────────────────────────────────────
-FROM node:20-alpine AS deps
+# ─── Stage 1: Build ──────────────────────────────────────────────────────────────
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # 使用国内镜像源加速依赖下载
 RUN npm config set registry https://registry.npmmirror.com
 
 COPY package.json package-lock.json* ./
-# 使用 npm install 而非 npm ci，容忍 lock 文件版本范围差异
-RUN npm install --omit=dev --no-audit --no-fund
-
-# ─── Stage 2: Build ──────────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
-WORKDIR /app
-
-RUN npm config set registry https://registry.npmmirror.com
-
-COPY package.json package-lock.json* ./
-RUN npm install --no-audit --no-fund
+# 配置下载超时与重试，避免单个 tarball 卡死导致整个 install 挂起
+# --loglevel=http 输出每个包的下载请求，便于观察进度（证明未卡死）
+RUN npm config set fetch-timeout 600000 && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 10000 && \
+    npm config set fetch-retry-maxtimeout 60000 && \
+    npm install --no-audit --no-fund --loglevel=http
 
 COPY . .
 
@@ -40,7 +36,7 @@ ENV CORS_ORIGIN=https://placeholder.com
 
 RUN npm run build
 
-# ─── Stage 3: Production ─────────────────────────────────────────────────────────
+# ─── Stage 2: Production ─────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
 
