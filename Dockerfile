@@ -12,7 +12,7 @@ RUN npm config set fetch-timeout 600000 && \
     npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 10000 && \
     npm config set fetch-retry-maxtimeout 60000 && \
-    npm install --no-audit --no-fund --loglevel=http
+    npm install --no-audit --no-fund --legacy-peer-deps --loglevel=http
 
 COPY . .
 
