@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 第三方 skill 脚本，非应用代码，不纳入 lint
+    ".agents/**",
   ]),
 ]);
 

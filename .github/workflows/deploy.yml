@@ -83,16 +83,7 @@ jobs:
             docker compose -f docker-compose.prod.yml up -d
 
             echo "=== [6/6] 执行数据库迁移 ==="
-            docker compose -f docker-compose.prod.yml exec -T app node -e "
-              const { Pool } = require('pg');
-              const { drizzle } = require('drizzle-orm/node-postgres');
-              const { migrate } = require('drizzle-orm/node-postgres/migrator');
-              const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
-              const db = drizzle(pool);
-              migrate(db, { migrationsFolder: './src/lib/db/migrations' })
-                .then(() => { console.log('✅ 迁移完成'); pool.end(); })
-                .catch(e => { console.error('❌ 迁移失败:', e); pool.end(); process.exit(1); });
-            "
+            docker compose -f docker-compose.prod.yml exec -T app node -e "const{Pool}=require('pg');const{drizzle}=require('drizzle-orm/node-postgres');const{migrate}=require('drizzle-orm/node-postgres/migrator');const pool=new Pool({connectionString:process.env.DATABASE_URL,max:1});migrate(drizzle(pool),{migrationsFolder:'./src/lib/db/migrations'}).then(()=>{console.log('migration done');return pool.end();}).catch((e)=>{console.error('migration failed:',e);process.exit(1);});"
 
             echo "=== ✅ 部署完成 ==="
             docker compose -f docker-compose.prod.yml ps

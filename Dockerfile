@@ -55,6 +55,10 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/src/lib/db/migrations ./src/lib/db/migrations
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 
+# 补全完整的 drizzle-orm 包：Next standalone 仅追踪应用 import 过的文件，
+# 不含 migrator 子模块，运行时迁移需要它，故整包复制以保证可加载
+COPY --from=builder /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
+
 # 创建上传目录
 RUN mkdir -p /app/uploads && chown nextjs:nodejs /app/uploads
 
