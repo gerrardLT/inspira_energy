@@ -36,7 +36,7 @@ const payloadArb: fc.Arbitrary<NotificationPayload> = fc.record({
   formType: fc.constantFrom("lp-interest", "developer", "contact", "newsletter"),
   name: safeStringArb(1, 30),
   email: fc.emailAddress(),
-  timestamp: fc.date({ min: new Date("2000-01-01"), max: new Date("2099-12-31") }).map((d) => d.toISOString()),
+  timestamp: fc.date({ min: new Date("2000-01-01"), max: new Date("2099-12-31"), noInvalidDate: true }).map((d) => d.toISOString()),
   summary: fc.dictionary(
     safeStringArb(1, 10),
     safeStringArb(1, 30),

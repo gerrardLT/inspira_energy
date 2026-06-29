@@ -89,7 +89,9 @@ export function buildTeamNotificationHtml(
   let rows = "";
   for (const [key, value] of Object.entries(formData)) {
     if (value === undefined || value === null || value === "") continue;
-    const label = FIELD_LABELS[key] ?? key;
+    // 使用 Object.hasOwn 进行安全字段映射，避免命中原型链属性（如 "constructor"、"toString"）
+    // 返回非字符串导致 escapeHtml 崩溃
+    const label = Object.hasOwn(FIELD_LABELS, key) ? FIELD_LABELS[key] : key;
     const displayValue = Array.isArray(value)
       ? value.join(", ")
       : String(value);

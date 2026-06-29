@@ -66,7 +66,7 @@ export function AboutTeam() {
           src="/images/hero-about.png"
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ opacity: 0.3 }}
+          style={{ opacity: 0.5 }}
         />
       </div>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />

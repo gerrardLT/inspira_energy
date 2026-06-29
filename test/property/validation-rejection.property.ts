@@ -81,7 +81,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("name");
             }
@@ -104,7 +104,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("institution");
             }
@@ -127,7 +127,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("email");
             }
@@ -150,7 +150,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("fund_types");
             }
@@ -174,7 +174,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("email");
             }
@@ -198,7 +198,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               // fund_types 数组中的元素验证错误，路径包含 fund_types
               const hasFundTypeError = fieldPaths.some((p) => p.startsWith("fund_types"));
@@ -226,7 +226,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               // 应标识缺少的必填字段
               expect(fieldPaths).toContain("company_name");
@@ -257,7 +257,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("capacity_mw");
             }
@@ -283,7 +283,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("email");
             }
@@ -308,7 +308,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("name");
               expect(fieldPaths).toContain("company");
@@ -334,7 +334,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("email");
             }
@@ -359,7 +359,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("name");
               expect(fieldPaths).toContain("email");
@@ -385,7 +385,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
             expect(result.success).toBe(false);
             if (!result.success) {
               const fieldPaths = result.error.issues.map((issue) =>
-                issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+                issue.path.map((p) => String(p)).join(".")
               );
               expect(fieldPaths).toContain("email");
             }
@@ -406,7 +406,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
           expect(result.success).toBe(false);
           if (!result.success) {
             const fieldPaths = result.error.issues.map((issue) =>
-              issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+              issue.path.map((p) => String(p)).join(".")
             );
             expect(fieldPaths).toContain("email");
           }
@@ -422,7 +422,7 @@ describe("Feature: backend-infrastructure, Property 2: Invalid Input Rejection w
           expect(result.success).toBe(false);
           if (!result.success) {
             const fieldPaths = result.error.issues.map((issue) =>
-              issue.path.map((p) => (typeof p === "object" && "key" in p ? p.key : p)).join(".")
+              issue.path.map((p) => String(p)).join(".")
             );
             expect(fieldPaths).toContain("email");
           }

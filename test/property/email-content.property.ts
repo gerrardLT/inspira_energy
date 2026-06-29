@@ -143,7 +143,7 @@ describe("Feature: backend-infrastructure, Property 14: Email Notification Conte
         // 遍历所有字段，验证非空值出现在 HTML 中
         for (const [key, value] of Object.entries(formData)) {
           // 跳过空值（与源码行为一致）
-          if (value === undefined || value === null || value === "") continue;
+          if (value === undefined || value === null || (value as unknown) === "") continue;
 
           const displayValue = toDisplayValue(value);
           const escapedValue = escapeHtml(displayValue);
@@ -178,7 +178,7 @@ describe("Feature: backend-infrastructure, Property 14: Email Notification Conte
           const html = buildTeamNotificationHtml(formType, formData);
 
           for (const [, value] of Object.entries(formData)) {
-            if (value === undefined || value === null || value === "") continue;
+            if (value === undefined || value === null || (value as unknown) === "") continue;
 
             const displayValue = toDisplayValue(value);
             const escapedValue = escapeHtml(displayValue);
@@ -209,7 +209,7 @@ describe("Feature: backend-infrastructure, Property 14: Email Notification Conte
           const html = buildTeamNotificationHtml(formType, formData);
 
           for (const [, value] of Object.entries(formData)) {
-            if (value === undefined || value === null || value === "") continue;
+            if (value === undefined || value === null || (value as unknown) === "") continue;
 
             const displayValue = toDisplayValue(value);
             const escapedValue = escapeHtml(displayValue);

@@ -188,7 +188,9 @@ function ConnectionArc({
   color?: string; opacity?: number;
 }) {
   const dotRef = useRef<THREE.Mesh>(null);
-  const tRef = useRef(Math.random());
+  // 惰性初始化：在帧循环（非渲染阶段）首次生成随机相位偏移，
+  // 避免在 render 期间调用 Math.random() 这一不纯函数
+  const tRef = useRef<number | null>(null);
 
   const { points, curve } = useMemo(() => {
     const s = latLngToVec3(startLat, startLng, 2.06);
@@ -199,6 +201,7 @@ function ConnectionArc({
   }, [startLat, startLng, endLat, endLng]);
 
   useFrame((_, delta) => {
+    if (tRef.current === null) tRef.current = Math.random();
     tRef.current = (tRef.current + delta * 0.2) % 1;
     const p = curve.getPoint(tRef.current);
     if (dotRef.current) dotRef.current.position.copy(p);

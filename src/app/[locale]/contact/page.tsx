@@ -128,7 +128,7 @@ export default function ContactPage() {
       <section className="relative overflow-hidden pt-[160px] pb-20 lg:pt-[200px] lg:pb-28">
         <div className="pointer-events-none absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/hero-contact.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.3 }} />
+          <img src="/images/hero-contact.png" alt="" className="h-full w-full object-cover" style={{ opacity: 0.5 }} />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gold/[0.04] via-transparent to-transparent" />
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 lg:px-10">

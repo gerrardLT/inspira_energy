@@ -198,7 +198,7 @@ describe("Property 2: 错误响应不泄漏内部细节", () => {
           expect(error).toBeInstanceOf(FileIOError);
 
           // 验证错误消息不包含内部路径
-          const errorMessage = (error as FileIOError).message;
+          const errorMessage = (error as Error).message;
           expect(errorMessage).not.toContain(internalPath);
 
           // 验证错误消息是固定的通用字符串
@@ -255,7 +255,7 @@ describe("Property 2: 错误响应不泄漏内部细节", () => {
         } catch (error) {
           expect(error).toBeInstanceOf(FileIOError);
 
-          const errorMessage = (error as FileIOError).message;
+          const errorMessage = (error as Error).message;
           // 验证错误消息不包含后端标识符
           expect(errorMessage.toLowerCase()).not.toContain(backendId.toLowerCase());
 
@@ -309,7 +309,7 @@ describe("Property 2: 错误响应不泄漏内部细节", () => {
         } catch (error) {
           expect(error).toBeInstanceOf(FileIOError);
 
-          const errorMessage = (error as FileIOError).message;
+          const errorMessage = (error as Error).message;
 
           // 验证错误消息不包含任何路径分隔符（表示内部路径泄漏）
           expect(errorMessage).not.toMatch(/[/\\]/);

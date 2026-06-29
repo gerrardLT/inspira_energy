@@ -2,242 +2,184 @@
 
 > **品牌色系**：深海军蓝 `#051937` / 金色 `#C4963A` / 青绿 `#2A8A7A`
 >
-> **通用风格后缀**：`photorealistic, 8K, cinematic, editorial photography, dark navy tones, no people, no text, no watermark, no logo`
->
 > **推荐工具**：Midjourney / DALL-E 3 / Stable Diffusion / 即梦 / 通义万相
 >
-> **推荐比例**：Hero 背景 16:9，内容图 3:2，头像 1:1
+> **本文档不含导航页 Hero 背景图**（`hero-*.png` 已定稿，无需重新生成）
 
 ---
 
-## 一、Hero 背景图（6 张）
+## 通用设置（每张都加）
 
-> 放置路径：`public/hero-{page}.png`
->
-> 尺寸：1920×1080+（16:9）
->
-> 用途：各导航页 Hero 区背景，需配合深色遮罩叠加
-
-### 1. 关于我们 `/about` → `public/hero-about.png`
+**统一风格后缀**（拼在每条提示词末尾）：
 
 ```
-Aerial cinematic photograph of a vast solar farm at golden hour, rows of photovoltaic panels stretching to the horizon, warm golden light reflecting off panel surfaces, deep navy blue sky transitioning to amber gradient near horizon, subtle atmospheric haze, shot from high altitude drone perspective, ultra-wide angle, photorealistic, 8K, dark moody tones suitable for dark background overlay, no people, no text, editorial photography style
+shot on Hasselblad, cinematic color grading, deep navy blue (#051937) dominant tone with warm gold (#C4963A) accents, dramatic directional lighting, fine film grain, high contrast, institutional luxury finance aesthetic, photorealistic, 8K
 ```
 
-### 2. 基金产品 `/funds` → `public/hero-funds.png`
+**统一负面提示词**（Negative prompt，场景图通用）：
 
 ```
-Cinematic close-up of sunlight reflecting off solar panel surfaces at dusk, abstract geometric patterns of photovoltaic cells filling the frame, deep blue and gold color palette, shallow depth of field with bokeh light reflections, premium financial aesthetic, dark navy background tone, luxurious and institutional feel, photorealistic, 8K, no people, no text, suitable for dark overlay with white text
-```
-
-### 3. 全球布局 `/markets` → `public/hero-markets.png`
-
-```
-Cinematic aerial view of a glowing world map at night seen from space, golden light dots marking energy installations across continents, deep navy blue ocean, subtle teal-green energy grid lines connecting points, dark atmospheric clouds, NASA satellite photography style, photorealistic earth curvature, 8K, dark moody tones, no text, no labels, suitable for dark overlay, premium institutional finance aesthetic
-```
-
-### 4. 开发商服务 `/developers` → `public/hero-developers.png`
-
-```
-Cinematic photograph of wind turbines silhouetted against a dramatic golden sunrise, modern white turbine blades catching warm light, deep navy blue sky with scattered golden clouds, vast landscape with rolling terrain, shot from low angle looking up, sense of scale and power, photorealistic, 8K, dark moody atmosphere suitable for dark overlay, no people, no text, editorial photography, premium clean energy aesthetic
-```
-
-### 5. 洞察报告 `/insights` → `public/hero-insights.png`
-
-```
-Abstract cinematic photograph of glowing data visualization over a dark navy background, golden light trails forming network patterns resembling energy distribution grids, subtle teal accent lines, depth of field with soft bokeh, premium financial analytics aesthetic, futuristic but elegant, no charts or text, photorealistic light painting style, 8K, dark moody tones suitable for white text overlay, editorial design quality
-```
-
-### 6. 联系我们 `/contact` → `public/hero-contact.png`
-
-```
-Cinematic architectural photograph of a modern Singapore skyline at blue hour, Marina Bay financial district, sleek glass skyscrapers reflecting golden sunset light, deep navy blue sky, calm water reflections, aerial drone perspective, photorealistic, 8K, premium institutional finance aesthetic, dark tones suitable for text overlay, no people, no text, editorial photography style, sense of prestige and trust
+text, words, letters, watermark, logo, signature, people, faces, crowds, cartoon, illustration, 3d render, oversaturated, lens flare overload, distorted, blurry, low quality, cluttered
 ```
 
 ---
 
-## 二、基金详情图（4 张）
+## 一、基金详情图（4 张，3:2，1200×800）
 
-> 放置路径：`public/funds/{name}.png`
->
-> 尺寸：1200×800（3:2）
->
-> 用途：`/funds` 页面各基金 section 配图
+> 放置路径：`public/images/funds/{name}.png`
 
-### 1. 债权基金 → `public/funds/debt.png`
+### 1. 债权基金 `debt.png` — 强调"稳健、固定收益"
 
 ```
-Cinematic photograph of modern wind turbines at sunset, golden light on white blades, deep blue sky, clean energy infrastructure, photorealistic, 8K, dark navy tones, no people, no text, editorial photography style
+A single modern wind turbine standing tall against a calm twilight sky, viewed from a stable low angle conveying stability and reliability, muted navy blue gradient sky with a thin band of gold on the horizon, still and serene atmosphere, minimalist composition with lots of negative space, sense of dependable long-term income
 ```
 
-### 2. 股权基金 → `public/funds/equity.png`
+### 2. 股权基金 `equity.png` — 强调"规模、增长"
 
 ```
-Aerial drone photograph of massive solar farm with millions of panels in geometric grid pattern, golden hour lighting, deep shadows, photorealistic, 8K, dark navy tones, no people, editorial photography style
+Expansive aerial top-down view of a massive solar farm forming a vast geometric grid of photovoltaic panels stretching to the horizon, strong perspective lines conveying scale and growth, late afternoon golden light casting long shadows between panel rows, deep navy shadows, sense of large-scale capital and expansion
 ```
 
-### 3. 开发基金 → `public/funds/development.png`
+### 3. 开发基金 `development.png` — 强调"在建、早期"
 
 ```
-Cinematic photograph of solar farm construction site at dawn, partially installed photovoltaic panels, cranes and infrastructure, golden light breaking over horizon, photorealistic, 8K, dark moody tones, no people, no text, editorial photography style
+A solar farm under construction at dawn, half-installed photovoltaic panels with visible mounting structures and a crane in the misty distance, partially completed rows showing work in progress, soft golden sunrise breaking through morning haze, dynamic sense of building and creation, navy-toned shadows
 ```
 
-### 4. 运营基金 → `public/funds/cod.png`
+### 4. 运营基金 `cod.png` — 强调"已并网、稳定运营"
 
 ```
-Cinematic photograph of operational solar power plant at twilight, panels reflecting golden sky, transmission towers in background, deep blue tones, photorealistic, 8K, no people, no text, editorial photography style
+A fully operational solar power plant at blue hour, neat rows of panels with a substation and transmission towers softly lit in the background, steady warm glow reflecting off panel surfaces, calm and mature atmosphere of a completed revenue-generating asset, deep navy sky with subtle gold
 ```
 
 ---
 
-## 三、团队成员头像（3 张）
+## 二、团队头像（3 张，1:1，600×600）
 
-> 放置路径：`public/team/{name}.png`
+> 放置路径：`public/images/team/{name}.png`
 >
-> 尺寸：600×600（1:1）
->
-> 用途：`/about` 页面团队卡片
+> 头像专用负面词：`text, watermark, logo, cartoon, 3d render, distorted face, extra fingers, blurry, low quality`
 
-### 1. 陈伟 — 管理合伙人 → `public/team/wei.png`
+### 1. 陈伟 — 管理合伙人 `wei.png`
 
 ```
-Professional corporate headshot of a confident Asian businessman in his 40s, wearing dark navy suit, neutral dark background, soft studio lighting with warm golden tones, editorial photography style, looking at camera, slight confident smile, photorealistic, 8K, premium finance executive portrait
+Professional studio headshot of a distinguished East Asian man in his late 40s, short neat graying hair, wearing a charcoal navy tailored suit with no tie, calm authoritative expression with a faint confident smile, looking directly at camera, dark gradient charcoal background, soft Rembrandt lighting with subtle warm gold rim light, shallow depth of field, executive portrait, photorealistic, 8K
 ```
 
-### 2. Sarah Lim — 投资主管 → `public/team/sarah.png`
+### 2. Sarah Lim — 投资主管 `sarah.png`
 
 ```
-Professional corporate headshot of a confident Asian businesswoman in her 30s, wearing dark blazer, neutral dark background, soft studio lighting with warm golden tones, editorial photography style, looking at camera, approachable expression, photorealistic, 8K, premium finance executive portrait
+Professional studio headshot of a poised East Asian woman in her mid 30s, sleek shoulder-length black hair, wearing a dark navy blazer, intelligent approachable expression with a slight smile, looking directly at camera, dark gradient charcoal background, soft butterfly lighting with warm gold rim light, shallow depth of field, executive portrait, photorealistic, 8K
 ```
 
-### 3. 张大为 — 中国业务总监 → `public/team/david.png`
+### 3. 张大为 — 中国业务总监 `david.png`
 
 ```
-Professional corporate headshot of a confident Asian businessman in his 40s, wearing dark suit, neutral dark background, soft studio lighting with warm golden tones, editorial photography style, looking at camera, photorealistic, 8K, premium finance executive portrait
+Professional studio headshot of a confident East Asian man in his early 40s, short black hair, wearing a dark slate blue suit with open collar, friendly determined expression, looking directly at camera, dark gradient charcoal background, soft loop lighting with warm gold accent, shallow depth of field, executive portrait, photorealistic, 8K
 ```
 
 ---
 
-## 四、开发商服务图（3 张）
+## 三、开发商服务图（3 张，3:2，1200×800）
 
-> 放置路径：`public/services/{name}.png`
->
-> 尺寸：1200×800（3:2）
->
-> 用途：`/developers` 页面服务 section 配图
+> 放置路径：`public/images/services/{name}.png`
 
-### 1. 项目联合投资 → `public/services/coinvest.png`
+### 1. 项目联合投资 `coinvest.png` — 强调"合作、共同投资"
 
 ```
-Cinematic golden hour photograph of solar panels in neat rows catching warm sunlight, aerial perspective showing scale, deep navy sky, photorealistic, 8K, dark tones, no people, no text, editorial photography style
+Two adjacent solar farm sections meeting at a clean dividing line seen from aerial perspective, symbolizing partnership and joint ownership, golden hour light evenly across both halves, deep navy shadows, balanced symmetrical composition conveying collaboration and shared capital
 ```
 
-### 2. 许可证转让 → `public/services/permit.png`
+### 2. 许可证转让 `permit.png` — 强调"前期、土地、规划"
 
 ```
-Cinematic photograph of energy infrastructure planning, aerial view of land survey with surveying equipment near solar farm site, golden hour, deep blue tones, photorealistic, 8K, no people, no text, editorial photography style
+Aerial view of an undeveloped land parcel marked with survey stakes and boundary markers at the edge of an existing solar installation, planning and pre-construction stage, soft golden morning light over open terrain, sense of opportunity and project rights transfer, navy-toned distant landscape
 ```
 
-### 3. 商业运营收购 → `public/services/cod-acquisition.png`
+### 3. 商业运营收购 `cod-acquisition.png` — 强调"成熟资产、收购"
 
 ```
-Cinematic photograph of wind turbines in operation at golden sunrise, blades spinning, deep navy sky with golden clouds, photorealistic, 8K, dark tones, no people, no text, editorial photography style
+A mature operational wind and solar hybrid site at golden sunrise, spinning turbine blades and rows of panels working in harmony, established infrastructure conveying a proven revenue-generating asset ready for acquisition, warm gold light, deep navy sky
 ```
 
 ---
 
-## 五、洞察文章封面图（8 张）
+## 四、洞察文章封面（8 张，4:3，800×600）
 
-> 放置路径：`public/insights/art-{n}.png`
->
-> 尺寸：800×600（4:3）
->
-> 用途：`/insights` 页面文章卡片封面
+> 放置路径：`public/images/insights/art-{n}.png`
 
-### 1. 东南亚太阳能部署 → `public/insights/art-1.png`
+### 1. 东南亚太阳能部署 `art-1.png`
 
 ```
-Aerial view of Southeast Asian solar farm installation with tropical landscape, golden hour, photorealistic, 8K, dark navy tones, no people, no text, editorial photography style
+Aerial view of a solar farm integrated into a lush tropical Southeast Asian landscape, palm trees and green hills surrounding blue panels, humid golden afternoon light, navy shadows
 ```
 
-### 2. 欧盟碳边境税 → `public/insights/art-2.png`
+### 2. 欧盟碳边境税 (CBAM) `art-2.png`
 
 ```
-Abstract cinematic photograph of industrial factory silhouette with smoke stacks transitioning to clean energy, golden light, deep navy tones, photorealistic, 8K, no text, editorial photography style
+Conceptual split scene: a heavy industrial factory with cooling towers on one side dissolving into clean wind turbines on the other, symbolizing carbon transition policy, dramatic gold-to-navy gradient sky, moody atmospheric
 ```
 
-### 3. 电池储能 → `public/insights/art-3.png`
+### 3. 电池储能 `art-3.png`
 
 ```
-Cinematic close-up of large-scale battery storage facility, rows of white battery containers, golden hour lighting, deep blue sky, photorealistic, 8K, no people, no text, editorial photography style
+Rows of large white grid-scale battery energy storage containers in an outdoor facility, clean industrial composition, cool blue tones with warm gold edge lighting at dusk, navy sky
 ```
 
-### 4. 基金动态 → `public/insights/art-4.png`
+### 4. 基金动态 `art-4.png`
 
 ```
-Abstract financial visualization, golden light trails over dark navy background, premium finance aesthetic, photorealistic, 8K, no text, editorial design quality
+Abstract financial concept image: elegant glowing gold light trails and ascending data-flow lines over a deep navy background, premium institutional finance visualization, soft bokeh, no charts no numbers
 ```
 
-### 5. 澳大利亚CIS招标 → `public/insights/art-5.png`
+### 5. 澳大利亚 CIS 招标 `art-5.png`
 
 ```
-Cinematic aerial of Australian outback solar farm, red earth contrasting with blue panels, golden hour, photorealistic, 8K, dark tones, no people, no text, editorial photography style
+Aerial view of a solar farm on the red Australian outback earth, striking contrast between rust-red soil and deep blue photovoltaic panels, harsh golden sunlight, vast arid landscape, navy sky
 ```
 
-### 6. ESG影响力报告 → `public/insights/art-6.png`
+### 6. ESG 影响力报告 `art-6.png`
 
 ```
-Cinematic photograph of lush green landscape with solar panels in distance, golden sunlight, nature and technology harmony, deep blue sky, photorealistic, 8K, no people, no text, editorial photography style
+A solar installation seamlessly blended into a thriving green meadow with wildflowers, harmony between renewable technology and nature, soft golden backlight, fresh and optimistic mood, navy-toned distant treeline
 ```
 
-### 7. 中国绿色电力 → `public/insights/art-7.png`
+### 7. 中国绿色电力 `art-7.png`
 
 ```
-Cinematic aerial of Chinese industrial rooftop solar installation, geometric patterns, golden hour, photorealistic, 8K, dark navy tones, no people, no text, editorial photography style
+Aerial view of vast rooftop solar panels covering modern industrial factory buildings in China, repeating geometric blue patterns from above, hazy golden urban light, navy shadows
 ```
 
-### 8. 越南PDP8 → `public/insights/art-8.png`
+### 8. 越南 PDP8 电力规划 `art-8.png`
 
 ```
-Cinematic photograph of Vietnamese countryside with solar farm, rice paddies and panels, golden sunset, photorealistic, 8K, dark tones, no people, no text, editorial photography style
+A solar farm bordering terraced green rice paddies in the Vietnamese countryside, water reflections between panels, warm golden sunset, peaceful rural development scene, navy sky
 ```
 
 ---
 
-## 六、社会证明评价配图（2 张）
+## 五、社会证明配图（2 张，4:3，600×450）
 
-> 放置路径：`public/testimonials/project-{n}.png`
->
-> 尺寸：600×450（4:3）
->
-> 用途：首页 SocialProof 区块评价配图
+> 放置路径：`public/images/testimonials/project-{n}.png`
 
-### 1. 越南太阳能项目 → `public/testimonials/project-1.png`
+### 1. 越南太阳能项目 `project-1.png`
 
 ```
-Cinematic photograph of Vietnamese solar farm at golden hour, panels reflecting warm light, lush tropical landscape, deep navy sky, photorealistic, 8K, no people, no text, editorial photography style
+Ground-level wide shot of a completed solar farm in Vietnam at golden hour, panels receding toward green tropical hills, warm sunlight glancing across panel surfaces, sense of a successful delivered project, navy sky with gold horizon
 ```
 
-### 2. 基础设施投资 → `public/testimonials/project-2.png`
+### 2. 基础设施投资 `project-2.png`
 
 ```
-Cinematic aerial of large-scale solar and wind hybrid energy installation at sunset, golden light on turbines and panels, deep blue sky, photorealistic, 8K, no people, no text, editorial photography style
+Cinematic aerial of a large-scale hybrid solar-and-wind energy installation at sunset, turbines and panel arrays coexisting across the landscape, golden light unifying the scene, conveying major infrastructure scale, deep navy sky
 ```
 
 ---
 
-## 七、文件目录结构
+## 六、文件目录结构
 
 ```
-public/
-├── hero-about.png          ← /about Hero 背景
-├── hero-funds.png          ← /funds Hero 背景
-├── hero-markets.png        ← /markets Hero 背景
-├── hero-developers.png     ← /developers Hero 背景
-├── hero-insights.png       ← /insights Hero 背景
-├── hero-contact.png        ← /contact Hero 背景
-├── solar_fam_aerial.mp4    ← 首页 Hero 视频（已有）
-├── logo.png                ← 品牌 Logo（已有）
+public/images/
 ├── funds/
 │   ├── debt.png
 │   ├── equity.png
@@ -252,26 +194,19 @@ public/
 │   ├── permit.png
 │   └── cod-acquisition.png
 ├── insights/
-│   ├── art-1.png
-│   ├── art-2.png
-│   ├── art-3.png
-│   ├── art-4.png
-│   ├── art-5.png
-│   ├── art-6.png
-│   ├── art-7.png
-│   └── art-8.png
+│   ├── art-1.png  ~  art-8.png
 └── testimonials/
     ├── project-1.png
     └── project-2.png
 ```
 
-**合计：26 张图片**
+**合计：20 张**（4 基金 + 3 头像 + 3 服务 + 8 洞察 + 2 社会证明）
 
 ---
 
 ## 使用说明
 
-1. 复制对应提示词到 AI 绘图工具
-2. 生成后按上方文件名保存到 `public/` 对应目录
-3. 图片就位后通知我，我会批量替换代码中的 Unsplash 链接为本地路径
-4. Hero 背景图建议在页面代码中加 `opacity: 0.15-0.25` + 深色渐变遮罩，确保文字可读性
+1. 复制对应提示词到 AI 绘图工具，末尾拼上"统一风格后缀"，并填入"统一负面提示词"
+2. 生成后按上方文件名保存到 `public/images/` 对应目录
+3. 注意比例：基金/服务图 3:2，头像 1:1，洞察图 4:3，社会证明 4:3
+4. 图片就位后通知我，我会核对代码中的路径引用是否正确
