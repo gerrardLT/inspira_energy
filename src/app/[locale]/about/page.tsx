@@ -112,7 +112,7 @@ export default function AboutPage() {
             src="/images/hero-about.png"
             alt=""
             className="h-full w-full object-cover"
-            style={{ opacity: 0.3 }}
+            style={{ opacity: 0.7 }}
           />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[var(--navy-deep)]/50 via-[var(--navy-deep)]/70 to-[var(--navy-deep)]" />
